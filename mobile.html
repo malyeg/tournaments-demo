@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تطبيق الهاتف — نموذج تجريبي</title>
+<style>
+:root {
+  --bg: #f4f6f9; --fg: #0f1f33; --primary: #0b3b5c; --primary-fg: #ffffff; --muted: #f1f4f8; --muted-fg: #5b6b7f;
+  --card: #ffffff; --border: #dbe2ea; --danger: #c62828; --success: #1e8e4e; --warning: #b7791f; --accent: #b8923a; --side: #0b2a42;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans Arabic", Tahoma, sans-serif; }
+button { font: inherit; cursor: pointer; }
+.top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--border); }
+.top b { font-size: 1.05rem; }
+.top .sub { font-size: .78rem; color: var(--muted-fg); }
+.top .grow { flex: 1; }
+.chip { border: 1px solid var(--border); background: var(--card); border-radius: 999px; padding: 6px 14px; font-size: .88rem; color: var(--fg); }
+.chip.on { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); font-weight: 700; }
+.demo { border: 1px dashed var(--warning); color: var(--warning); border-radius: 999px; padding: 4px 10px; font-size: .75rem; }
+.back { color: var(--primary); font-size: .88rem; text-decoration: none; font-weight: 600; }
+.stage { display: flex; justify-content: center; align-items: flex-start; gap: 40px; padding: 28px 16px 40px; }
+.info { width: 340px; padding-top: 24px; }
+.info h1 { font-size: 1.5rem; margin: 0 0 6px; color: var(--primary); }
+.info p { color: var(--muted-fg); line-height: 1.7; margin: 0 0 14px; }
+.info li { line-height: 1.8; margin-bottom: 6px; }
+.info ul { padding-inline-start: 20px; margin: 0 0 16px; }
+.phone { width: 390px; height: 780px; flex: none; border: 10px solid var(--side); border-radius: 44px; background: var(--bg); overflow: hidden; display: flex; flex-direction: column; }
+.ahead { background: var(--primary); color: var(--primary-fg); padding: 14px 16px 12px; }
+.ahead .t { font-weight: 700; font-size: 1.05rem; }
+.ahead .s { font-size: .75rem; opacity: .8; margin-top: 2px; }
+.abody { flex: 1; overflow-y: auto; padding: 14px; }
+.tabs { display: flex; background: var(--card); border-top: 1px solid var(--border); }
+.tabs button { flex: 1; border: 0; background: none; padding: 12px 4px 14px; font-size: .8rem; color: var(--muted-fg); border-top: 3px solid transparent; }
+.tabs button.on { color: var(--primary); font-weight: 700; border-top-color: var(--accent); }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+.card.tap { cursor: pointer; }
+.card.ai { border-color: var(--accent); background: #fbf6ea; }
+.h { font-weight: 700; margin: 0 0 8px; font-size: .98rem; }
+.xs { font-size: .76rem; } .sm { font-size: .86rem; } .mut { color: var(--muted-fg); }
+.row { display: flex; align-items: center; gap: 10px; } .between { justify-content: space-between; }
+.badge { display: inline-block; border-radius: 999px; padding: 2px 10px; font-size: .74rem; font-weight: 700; background: var(--muted); color: var(--muted-fg); white-space: nowrap; }
+.badge.ok { background: #e3f4ea; color: var(--success); } .badge.wait { background: #fbf0d9; color: var(--warning); }
+.badge.bad { background: #fde7e7; color: var(--danger); } .badge.live { background: var(--danger); color: #fff; } .badge.ai { background: #f3e7c6; color: #7a5c14; }
+.btn { border: 1px solid var(--border); background: var(--card); border-radius: 10px; padding: 9px 14px; font-weight: 700; font-size: .88rem; color: var(--fg); }
+.btn.p { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); } .btn.g { background: var(--success); color: #fff; border-color: var(--success); }
+.btn.w { width: 100%; } .btn:disabled { opacity: .45; cursor: default; }
+.score { display: flex; align-items: center; justify-content: center; gap: 14px; text-align: center; }
+.score .n { font-size: 2.3rem; font-weight: 800; line-height: 1; } .score .tm { font-weight: 700; font-size: .92rem; width: 84px; }
+.av { width: 44px; height: 44px; border-radius: 50%; background: #fdeee4; color: #d9541a; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; flex: none; }
+table { width: 100%; border-collapse: collapse; font-size: .84rem; } th { color: var(--muted-fg); font-weight: 600; font-size: .74rem; }
+th, td { padding: 8px 4px; text-align: center; border-bottom: 1px solid var(--border); } th:first-child, td:first-child { text-align: right; }
+tr:last-child td { border-bottom: 0; }
+.li { padding: 10px 0; border-bottom: 1px solid var(--border); } .li:last-child { border-bottom: 0; }
+.pts { display: flex; gap: 6px; margin-top: 8px; } .pts .btn { flex: 1; padding: 12px 0; font-size: 1rem; }
+.field { margin-bottom: 10px; } .field label { display: block; font-size: .76rem; color: var(--muted-fg); margin-bottom: 4px; }
+.field input { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 9px 10px; font: inherit; background: var(--card); color: var(--fg); }
+.spin { display: inline-block; width: 16px; height: 16px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: sp .8s linear infinite; vertical-align: middle; }
+@keyframes sp { to { transform: rotate(360deg); } }
+.lic { background: var(--primary); color: var(--primary-fg); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+.lic .gold { color: #e3c56f; font-size: .76rem; font-weight: 700; }
+.qr { background: #fff; border-radius: 8px; padding: 6px; line-height: 0; }
+.step { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); } .step:last-child { border-bottom: 0; }
+.dot { width: 26px; height: 26px; border-radius: 50%; background: var(--muted); color: var(--muted-fg); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: .8rem; flex: none; }
+.dot.done { background: var(--success); color: #fff; } .dot.now { background: var(--accent); color: #fff; }
+#toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--side); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: .86rem; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; text-align: center; }
+#toast.on { opacity: 1; }
+@media (max-width: 800px) {
+  .stage { flex-direction: column; align-items: center; gap: 12px; padding: 12px 0 24px; }
+  .info { width: 100%; padding: 0 16px; order: 2; }
+  .phone { width: 100%; max-width: 430px; height: calc(100dvh - 120px); min-height: 560px; border-width: 0; border-radius: 0; }
+}
+</style>
+<meta name="robots" content="noindex,nofollow">
+<style>#sketch-tools{display:none!important}</style>
+</head>
+<body>
+<div class="top">
+  <div><b id="pname"></b><div class="sub">تطبيق الهاتف · اتحاد كرة السلة · موسم 2026 / 2027</div></div>
+  <span class="grow"></span>
+  <span id="roles" class="row" style="flex-wrap:wrap"></span>
+  <span class="demo">بيانات تجريبية</span>
+  <a class="back" href="./">→ منصة الاتحاد</a>
+</div>
+<div class="stage">
+  <div class="info" id="info"></div>
+  <div class="phone"><div class="ahead" id="ahead"></div><div class="abody" id="abody"></div><div class="tabs" id="tabs"></div></div>
+</div>
+<div id="toast"></div>
+<script>
+const CONFIG = { product: 'منصة البطولات' };  // placeholder name — same swap point as index.html
+const COMP = 'دوري المرتبط — تحت 16 سنة';
+const ROLES = {
+  fan: { name: 'الجمهور والأهالي', title: 'متابعة البطولة', tabs: [['today', 'اليوم'], ['table', 'الترتيب'], ['card', 'بطاقة اللاعب'], ['alerts', 'التنبيهات']],
+    lead: 'ما يراه ولي الأمر واللاعب والمشجع، من دون أي حساب خاص.',
+    pts: ['مباريات اليوم والنتيجة المباشرة لحظة بلحظة', 'الترتيب يتحدَّث فور اعتماد النتيجة', 'بطاقة قيد رقمية للاعب تُعرض عند دخول الملعب', 'تنبيه عند تغيّر موعد أو اعتماد نتيجة'] },
+  ref: { name: 'الحكم', title: 'حساب الحكم', tabs: [['assign', 'تعييناتي'], ['day', 'يوم المباراة'], ['record', 'سجلّي']],
+    lead: 'الحكم يعرف مبارياته، ويؤكد حضوره، ويوقّع التقرير من هاتفه.',
+    pts: ['التعيينات تصل كإشعار، مع قبول أو اعتذار', 'عند الاعتذار تُبلَّغ لجنة الحكام فوراً لاختيار بديل', 'يوم المباراة: مراجعة القوائم ثم توقيع التقرير', 'سجل بكل المباريات التي أدارها في الموسم'] },
+  scorer: { name: 'المسجِّل', title: 'طاولة التسجيل', tabs: [['score', 'التسجيل'], ['sheet', 'الاستمارة']],
+    lead: 'المسجِّل يُدخل النقاط من الملعب، أو يصوّر الاستمارة الورقية.',
+    pts: ['أزرار كبيرة للنقاط، مع تراجع عن آخر إدخال', 'النتيجة تظهر للجمهور في اللحظة نفسها', 'صورة الاستمارة الورقية تتحول إلى أرقام (ذكاء اصطناعي)', 'المسجِّل يراجع ثم يؤكد قبل الحفظ'] },
+  club: { name: 'النادي', title: 'إداري النادي', tabs: [['players', 'اللاعبون'], ['reg', 'طلب قيد']],
+    lead: 'إداري النادي يرسل طلب القيد من الهاتف ويتابع حالته.',
+    pts: ['قائمة اللاعبين وحالة كل بطاقة', 'طلب قيد جديد مع تصوير المستندات', 'الرد يصل كإشعار: مقبول أو ينقصه مستند', 'لا حاجة للسفر إلى مقر الاتحاد لمتابعة الطلب'] }
+};
+const st = {
+  role: 'fan', tab: { fan: 'today', ref: 'assign', scorer: 'score', club: 'players' }, fanMatch: false,
+  assign: ['ok', 'wait', 'wait'], refStep: 0,
+  sc: { h: 54, a: 48, q: 3, log: [] }, scan: 0,
+  docs: [false, false, false], regSent: null
+};
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
+let tt;
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2400); }
+function setRole(r) { st.role = r; st.fanMatch = false; R(); }
+function setTab(t) { st.tab[st.role] = t; st.fanMatch = false; R(); }
+const sb = (h, a, sub) => '<div class="score"><div class="tm"><span class="av">أ</span><div>الأهلي</div></div><div><span class="n">' + h + '</span> <span class="mut">-</span> <span class="n">' + a + '</span><div style="margin-top:6px">' + sub + '</div></div><div class="tm"><span class="av">ز</span><div>الزمالك</div></div></div>';
+
+const V = {
+  today() {
+    if (st.fanMatch) return '<button class="btn" style="margin-bottom:10px" onclick="st.fanMatch=false;R()">→ رجوع</button>'
+      + '<div class="card">' + sb(st.sc.h, st.sc.a, '<span class="badge live">مباشر</span> <span class="badge">الربع ' + st.sc.q + '</span>') + '</div>'
+      + '<div class="card"><p class="h">النتيجة حسب الفترات</p><table><tr><th></th><th>1</th><th>2</th><th>3</th><th>المجموع</th></tr><tr><td><b>الأهلي</b></td><td>21</td><td>18</td><td>' + (st.sc.h - 39) + '</td><td><b>' + st.sc.h + '</b></td></tr><tr><td><b>الزمالك</b></td><td>17</td><td>22</td><td>' + (st.sc.a - 39) + '</td><td><b>' + st.sc.a + '</b></td></tr></table></div>'
+      + '<div class="card"><p class="h">آخر الأحداث</p><div class="li sm">ثلاثية · يوسف هشام (الأهلي)</div><div class="li sm">رميتان حرتان · زياد طارق (الزمالك)</div><div class="li sm">وقت مستقطع · الزمالك</div></div>';
+    return '<p class="xs mut" style="margin:0 0 8px">الجمعة 22 يناير 2027 · ' + COMP + '</p>'
+      + '<div class="card tap" onclick="st.fanMatch=true;R()">' + sb(st.sc.h, st.sc.a, '<span class="badge live">مباشر</span> <span class="badge">الربع ' + st.sc.q + '</span>') + '<p class="xs mut" style="text-align:center;margin:10px 0 0">الصالة الرئيسية · اضغط للتفاصيل</p></div>'
+      + '<div class="card"><div class="row between"><b class="sm">سبورتنج 61 - 58 الاتحاد السكندري</b><span class="badge ok">نتيجة معتمدة</span></div><p class="xs mut" style="margin:6px 0 0">17:00 · صالة سبورتنج</p></div>'
+      + '<div class="card"><div class="row between"><b class="sm">الجزيرة × سموحة</b><span class="badge">21:00</span></div><p class="xs mut" style="margin:6px 0 0">صالة الجزيرة · لم تبدأ</p></div>';
+  },
+  table() {
+    const T = [['الأهلي', 15, 13, 2], ['الزمالك', 15, 12, 3], ['سبورتنج', 15, 10, 5], ['الاتحاد السكندري', 15, 9, 6], ['الجزيرة', 14, 6, 8], ['سموحة', 14, 4, 10]];
+    return '<div class="card"><p class="h">' + COMP + '</p><table><tr><th>الفريق</th><th>لعب</th><th>فوز</th><th>خسارة</th><th>نقاط</th></tr>'
+      + T.map((r, i) => '<tr><td>' + (i + 1) + '. <b>' + r[0] + '</b></td><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td><td><b>' + (r[2] * 2 + r[3]) + '</b></td></tr>').join('') + '</table></div>'
+      + '<p class="xs mut">يتحدَّث الترتيب تلقائياً فور اعتماد أي نتيجة.</p>';
+  },
+  card() {
+    let q = ''; for (let y = 0; y < 11; y++) for (let x = 0; x < 11; x++) if ((x * 7 + y * 13 + x * y) % 3 === 0 || (x < 3 && y < 3) || (x > 7 && y < 3) || (x < 3 && y > 7)) q += '<rect x="' + x * 6 + '" y="' + y * 6 + '" width="6" height="6"/>';
+    return '<div class="lic"><div class="row between"><span class="gold">بطاقة قيد لاعب · موسم 2026 / 2027</span><span class="badge ok">سارية</span></div>'
+      + '<div class="row" style="margin-top:14px"><span class="av" style="width:56px;height:56px;font-size:1.2rem">ي</span><div style="flex:1"><div style="font-weight:800;font-size:1.1rem">يوسف هشام</div><div class="xs" style="opacity:.85">الأهلي · تحت 16 سنة · رقم 7</div><div class="xs" style="opacity:.85;margin-top:4px">رقم القيد 2027-004812</div></div>'
+      + '<div class="qr"><svg width="66" height="66" viewBox="0 0 66 66" fill="#0b2a42" aria-label="رمز البطاقة">' + q + '</svg></div></div></div>'
+      + '<div class="card"><div class="li row between sm"><span>تاريخ الميلاد</span><b>03/04/2011</b></div><div class="li row between sm"><span>السن</span><span class="badge ok">مُراجَع من المستندات</span></div><div class="li row between sm"><span>مباريات هذا الموسم</span><b>14</b></div><div class="li row between sm"><span>معدل النقاط</span><b>18.4</b></div></div>'
+      + '<p class="xs mut">يعرض اللاعب هذه البطاقة عند دخول الملعب، ويراجعها الحكم من هاتفه.</p>';
+  },
+  alerts() {
+    const A = [['الآن', 'بدأ الربع الثالث: الأهلي ' + st.sc.h + ' - ' + st.sc.a + ' الزمالك'], ['منذ ساعة', 'تم اعتماد نتيجة سبورتنج 61 - 58 الاتحاد السكندري'], ['أمس', 'تغيّر موعد مباراة الجزيرة × سموحة إلى 21:00'], ['منذ 3 أيام', 'صدر جدول الجولة 16']];
+    return '<div class="card">' + A.map(a => '<div class="li"><div class="sm"><b>' + a[1] + '</b></div><div class="xs mut">' + a[0] + '</div></div>').join('') + '</div>';
+  },
+  assign() {
+    const M = [['اليوم · 19:00', 'الأهلي × الزمالك', 'الصالة الرئيسية · حكم أول'], ['الاثنين 25 يناير · 17:00', 'سبورتنج × الجزيرة', 'صالة سبورتنج · حكم ثانٍ'], ['الجمعة 29 يناير · 19:00', 'سموحة × الاتحاد السكندري', 'صالة سموحة · حكم أول']];
+    const B = { ok: '<span class="badge ok">مؤكَّد</span>', wait: '<span class="badge wait">بانتظار ردّك</span>', no: '<span class="badge bad">اعتذرت</span>' };
+    return M.map((m, i) => '<div class="card"><div class="row between"><span class="xs mut">' + m[0] + '</span>' + B[st.assign[i]] + '</div><p class="h" style="margin:6px 0 2px">' + m[1] + '</p><p class="xs mut" style="margin:0">' + COMP + ' · ' + m[2] + '</p>'
+      + (st.assign[i] === 'wait' ? '<div class="row" style="margin-top:10px"><button class="btn g" style="flex:1" onclick="answer(' + i + ',1)">قبول</button><button class="btn" style="flex:1" onclick="answer(' + i + ',0)">اعتذار</button></div>' : '')
+      + (st.assign[i] === 'no' ? '<p class="xs mut" style="margin:8px 0 0">تم إبلاغ لجنة الحكام لاختيار بديل.</p>' : '') + '</div>').join('');
+  },
+  day() {
+    const S = [['مراجعة قوائم الفريقين', '12 لاعباً لكل فريق · كل البطاقات سارية', 'تمت المراجعة'], ['بدء المباراة', 'الأهلي × الزمالك · 19:00 · الصالة الرئيسية', 'بدء المباراة'], ['مراجعة النتيجة النهائية', 'الأهلي 78 - 71 الزمالك · مطابقة لاستمارة التسجيل', 'النتيجة صحيحة'], ['توقيع التقرير', 'يُرسل إلى الاتحاد للاعتماد', 'توقيع وإرسال']];
+    return '<div class="card"><p class="h">الأهلي × الزمالك</p><p class="xs mut" style="margin:0 0 6px">الطاقم: محمود السيد (حكم أول) · هاني عبد الله (حكم ثانٍ) · ياسر حمدي (مراقب)</p>'
+      + S.map((s, i) => '<div class="step"><span class="dot ' + (i < st.refStep ? 'done' : i === st.refStep ? 'now' : '') + '">' + (i < st.refStep ? '✓' : i + 1) + '</span><div style="flex:1"><b class="sm">' + s[0] + '</b><div class="xs mut">' + s[1] + '</div>' + (i === st.refStep ? '<button class="btn p" style="margin-top:8px" onclick="refNext()">' + s[2] + '</button>' : '') + '</div></div>').join('') + '</div>'
+      + (st.refStep >= 4 ? '<div class="card ai"><b class="sm">تم التوقيع وإرسال التقرير إلى الاتحاد.</b><p class="xs mut" style="margin:6px 0 0">22/01/2027 · 20:47</p></div>' : '<button class="btn w" onclick="toast(\'أُضيفت ملاحظة إلى تقرير المباراة\')">إضافة ملاحظة انضباطية</button>');
+  },
+  record() {
+    return '<div class="card"><div class="row"><span class="av">م</span><div><b>محمود السيد</b><div class="xs mut">حكم درجة أولى · فرع القاهرة</div></div></div></div>'
+      + '<div class="row" style="margin-bottom:12px"><div class="card" style="flex:1;margin:0;text-align:center"><div style="font-size:1.6rem;font-weight:800">23</div><div class="xs mut">مباراة هذا الموسم</div></div><div class="card" style="flex:1;margin:0;text-align:center"><div style="font-size:1.6rem;font-weight:800">9</div><div class="xs mut">حكم أول</div></div><div class="card" style="flex:1;margin:0;text-align:center"><div style="font-size:1.6rem;font-weight:800">14</div><div class="xs mut">حكم ثانٍ</div></div></div>'
+      + '<div class="card"><p class="h">آخر المباريات</p><div class="li sm">الجزيرة 55 - 60 سبورتنج <span class="xs mut">· 18 يناير</span></div><div class="li sm">سموحة 47 - 66 الأهلي <span class="xs mut">· 15 يناير</span></div><div class="li sm">الزمالك 70 - 52 الاتحاد السكندري <span class="xs mut">· 11 يناير</span></div></div>';
+  },
+  score() {
+    const P = k => '<div class="pts"><button class="btn" onclick="pt(\'' + k + '\',1)">+1</button><button class="btn" onclick="pt(\'' + k + '\',2)">+2</button><button class="btn" onclick="pt(\'' + k + '\',3)">+3</button></div>';
+    return '<div class="card">' + sb(st.sc.h, st.sc.a, '<span class="badge live">مباشر</span> <span class="badge">الربع ' + st.sc.q + '</span>') + '</div>'
+      + '<div class="card"><p class="h">الأهلي</p>' + P('h') + '</div><div class="card"><p class="h">الزمالك</p>' + P('a') + '</div>'
+      + '<div class="row" style="margin-bottom:12px"><button class="btn" style="flex:1" onclick="undo()"' + (st.sc.log.length ? '' : ' disabled') + '>تراجع</button><button class="btn p" style="flex:1" onclick="endQ()"' + (st.sc.q >= 4 ? ' disabled' : '') + '>إنهاء الربع</button></div>'
+      + '<p class="xs mut">' + (st.sc.log.length ? 'آخر إدخال: +' + st.sc.log[st.sc.log.length - 1][1] + ' ' + (st.sc.log[st.sc.log.length - 1][0] === 'h' ? 'الأهلي' : 'الزمالك') : 'كل إدخال يظهر للجمهور في اللحظة نفسها.') + '</p>';
+  },
+  sheet() {
+    if (st.scan === 0) return '<div class="card ai"><span class="badge ai">ذكاء اصطناعي</span><p class="h" style="margin-top:8px">الاستمارة الورقية</p><p class="sm mut" style="margin:0 0 12px">صوّر استمارة التسجيل الورقية بعد المباراة، وستتحول إلى أرقام تراجعها قبل الحفظ.</p><button class="btn p w" onclick="scan()">تصوير الاستمارة</button></div>';
+    if (st.scan === 1) return '<div class="card ai"><span class="spin"></span> <b class="sm">يقرأ الاستمارة…</b></div>';
+    const rows = [['يوسف هشام', 22, 1], ['عمر خالد', 18, 1], ['كريم سامي', 15, 0], ['أحمد مجدي', 13, 1]];
+    return '<div class="card ai"><div class="row between"><span class="badge ai">تم الاستخراج</span><span class="xs mut">الأهلي × الزمالك</span></div><table style="margin-top:8px"><tr><th>اللاعب</th><th>نقاط</th><th>الحالة</th></tr>'
+      + rows.map(r => '<tr><td>' + r[0] + '</td><td><b>' + r[1] + '</b></td><td>' + (r[2] ? '<span class="badge ok">مطابق</span>' : '<span class="badge wait">راجع الرقم</span>') + '</td></tr>').join('') + '</table>'
+      + (st.scan === 3 ? '<p class="sm" style="margin:12px 0 0"><b>تم الحفظ في سجل المباراة.</b></p>' : '<div class="row" style="margin-top:12px"><button class="btn p" style="flex:1" onclick="st.scan=3;R();toast(\'تم حفظ بيانات الاستمارة\')">تأكيد وحفظ</button><button class="btn" onclick="st.scan=0;R()">إعادة التصوير</button></div>') + '</div>';
+  },
+  players() {
+    const L = [['يوسف هشام', 'ok', 'مقيَّد'], ['عمر خالد', 'ok', 'مقيَّد'], ['كريم سامي', 'ok', 'مقيَّد'], ['أحمد مجدي', 'wait', 'قيد المراجعة'], ['سيف وليد', 'bad', 'ينقصه مستند']];
+    if (st.regSent) L.unshift([st.regSent, 'wait', 'قيد المراجعة']);
+    return '<div class="card"><div class="row between"><p class="h" style="margin:0">الأهلي · تحت 16 سنة</p><span class="xs mut">' + L.length + ' لاعبين</span></div>'
+      + L.map(p => '<div class="li row between"><span class="sm"><b>' + esc(p[0]) + '</b></span><span class="badge ' + p[1] + '">' + p[2] + '</span></div>').join('') + '</div>'
+      + '<button class="btn p w" onclick="setTab(\'reg\')">+ طلب قيد لاعب جديد</button>';
+  },
+  reg() {
+    const D = ['شهادة الميلاد', 'صورة شخصية', 'إقرار ولي الأمر'];
+    return '<div class="card"><p class="h">طلب قيد لاعب جديد</p><div class="field"><label>اسم اللاعب</label><input id="rn" value="مازن شريف"></div><div class="field"><label>تاريخ الميلاد</label><input value="12/09/2011"></div><div class="field"><label>الفئة</label><input value="تحت 16 سنة" disabled></div>'
+      + D.map((d, i) => '<div class="li row between"><span class="sm">' + d + '</span>' + (st.docs[i] ? '<span class="badge ok">تم الرفع</span>' : '<button class="btn" onclick="st.docs[' + i + ']=true;R()">تصوير</button>') + '</div>').join('') + '</div>'
+      + '<button class="btn p w" onclick="sendReg()"' + (st.docs.every(Boolean) ? '' : ' disabled') + '>إرسال الطلب إلى الاتحاد</button><p class="xs mut">' + (st.docs.every(Boolean) ? 'يصلك الرد كإشعار على الهاتف.' : 'صوّر المستندات الثلاثة أولاً.') + '</p>';
+  }
+};
+function answer(i, ok) { st.assign[i] = ok ? 'ok' : 'no'; R(); toast(ok ? 'تم تأكيد حضورك' : 'تم تسجيل اعتذارك'); }
+function refNext() { st.refStep++; R(); if (st.refStep >= 4) toast('تم إرسال التقرير إلى الاتحاد'); }
+function pt(k, n) { st.sc[k] += n; st.sc.log.push([k, n]); R(); }
+function undo() { const l = st.sc.log.pop(); if (l) st.sc[l[0]] -= l[1]; R(); }
+function endQ() { if (st.sc.q < 4) { st.sc.q++; st.sc.log = []; R(); toast('بدأ الربع ' + st.sc.q); } }
+function scan() { st.scan = 1; R(); setTimeout(() => { if (st.scan === 1) { st.scan = 2; R(); } }, 1500); }
+function sendReg() { st.regSent = ($('rn').value || '').trim() || 'لاعب جديد'; st.docs = [false, false, false]; st.tab.club = 'players'; R(); toast('تم إرسال الطلب · الحالة: قيد المراجعة'); }
+function R() {
+  const r = ROLES[st.role], tab = st.tab[st.role];
+  $('pname').textContent = CONFIG.product;
+  $('roles').innerHTML = Object.keys(ROLES).map(k => '<button class="chip' + (k === st.role ? ' on' : '') + '" onclick="setRole(\'' + k + '\')">' + ROLES[k].name + '</button>').join('');
+  $('info').innerHTML = '<h1>' + r.name + '</h1><p>' + r.lead + '</p><ul>' + r.pts.map(p => '<li>' + p + '</li>').join('') + '</ul><p class="xs">اضغط داخل الهاتف لتجربة الشاشات. كل الأسماء والأرقام تجريبية.</p>';
+  $('ahead').innerHTML = '<div class="t">' + r.title + '</div><div class="s">' + CONFIG.product + ' · ' + r.tabs.find(t => t[0] === tab)[1] + '</div>';
+  $('abody').innerHTML = V[tab]();
+  $('tabs').innerHTML = r.tabs.map(t => '<button class="' + (t[0] === tab ? 'on' : '') + '" onclick="setTab(\'' + t[0] + '\')">' + t[1] + '</button>').join('');
+}
+R();
+</script>
+</body>
+</html>
