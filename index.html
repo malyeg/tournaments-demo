@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sketch 004 · Federation POC</title>
+<style id="theme">
+/* Federation / ministry platform theme — official look (navy + gold).
+   Same variable names as default.css so sketches can switch between them. */
+:root {
+  --color-bg: #f4f6f9;
+  --color-fg: #0f1f33;
+  --color-primary: #0b3b5c;
+  --color-primary-fg: #ffffff;
+  --color-secondary: #e9eef4;
+  --color-muted: #f1f4f8;
+  --color-muted-fg: #5b6b7f;
+  --color-card: #ffffff;
+  --color-border: #dbe2ea;
+  --color-destructive: #c62828;
+  --color-success: #1e8e4e;
+  --color-warning: #b7791f;
+  --color-info: #1d6fb8;
+  --color-accent: #b8923a;
+  --color-amber: #b7791f;
+
+  --color-side-bg: #0b2a42;
+  --color-side-fg: #e6edf5;
+  --color-side-muted: #8fa5bc;
+  --color-side-active: #14476c;
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", "Noto Sans Arabic", Tahoma, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-2xl: 1.5rem;
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-full: 9999px;
+}
+</style>
+<script id="themes">window.THEMES={"federation":"/* Federation / ministry platform theme — official look (navy + gold).\n   Same variable names as default.css so sketches can switch between them. */\n:root {\n  --color-bg: #f4f6f9;\n  --color-fg: #0f1f33;\n  --color-primary: #0b3b5c;\n  --color-primary-fg: #ffffff;\n  --color-secondary: #e9eef4;\n  --color-muted: #f1f4f8;\n  --color-muted-fg: #5b6b7f;\n  --color-card: #ffffff;\n  --color-border: #dbe2ea;\n  --color-destructive: #c62828;\n  --color-success: #1e8e4e;\n  --color-warning: #b7791f;\n  --color-info: #1d6fb8;\n  --color-accent: #b8923a;\n  --color-amber: #b7791f;\n\n  --color-side-bg: #0b2a42;\n  --color-side-fg: #e6edf5;\n  --color-side-muted: #8fa5bc;\n  --color-side-active: #14476c;\n\n  --font-sans: system-ui, -apple-system, \"Segoe UI\", \"Noto Sans Arabic\", Tahoma, sans-serif;\n  --text-xs: 0.75rem;\n  --text-sm: 0.875rem;\n  --text-base: 1rem;\n  --text-lg: 1.125rem;\n  --text-2xl: 1.5rem;\n\n  --radius-xl: 0.75rem;\n  --radius-2xl: 1rem;\n  --radius-full: 9999px;\n}\n","default":"/* Court Attack theme — mirrors .planning/design/DESIGN.md tokens (src/lib/colors.ts). */\n:root {\n  --color-bg: #ffffff;\n  --color-fg: #0f172a;\n  --color-primary: #ffd000;\n  --color-primary-fg: #0f172a;\n  --color-secondary: #f1f5f9;\n  --color-muted: #f8fafc;\n  --color-muted-fg: #64748b;\n  --color-card: #ffffff;\n  --color-border: #e2e8f0;\n  --color-destructive: #ef4444;\n  --color-success: #22c55e;\n  --color-warning: #eab308;\n  --color-info: #3b82f6;\n  --color-accent: #5e8c8c;\n  --color-amber: #f59e0b;\n\n  --font-sans: system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif;\n  --text-xs: 0.75rem;\n  --text-sm: 0.875rem;\n  --text-base: 1rem;\n  --text-lg: 1.125rem;\n  --text-2xl: 1.5rem;\n\n  --radius-xl: 0.75rem;\n  --radius-2xl: 1rem;\n  --radius-full: 9999px;\n}\n\n[data-theme=\"dark\"] {\n  --color-bg: #0f172a;\n  --color-fg: #f8fafc;\n  --color-secondary: #1e293b;\n  --color-muted: #1e293b;\n  --color-muted-fg: #94a3b8;\n  --color-card: #1e293b;\n  --color-border: #334155;\n  --color-destructive: #f87171;\n  --color-success: #4ade80;\n  --color-warning: #facc15;\n  --color-info: #60a5fa;\n  --color-accent: #6ba3a3;\n}\n"};</script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: var(--font-sans); background: #94a3b8; color: var(--color-fg); }
+  #app { container-type: inline-size; margin: 0 auto; max-width: 100%; min-height: 100vh; background: var(--color-bg); display: flex; flex-direction: column; transition: max-width .2s ease; }
+
+  /* top bar */
+  .top { position: sticky; top: 0; z-index: 50; background: var(--color-card); border-bottom: 1px solid var(--color-border); display: flex; align-items: center; gap: 12px; padding: 10px 16px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .logo { width: 40px; height: 40px; border-radius: 10px; background: var(--color-primary); color: var(--color-primary-fg); display: flex; align-items: center; justify-content: center; flex: none; }
+  .logo svg { width: 22px; height: 22px; display: block; }
+  .brand b { display: block; font-size: var(--text-base); }
+  .brand span { display: block; font-size: var(--text-xs); color: var(--color-muted-fg); }
+  .spacer { flex: 1; }
+  .sports { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+  .sport { display: flex; align-items: center; gap: 6px; white-space: nowrap; border: 1px solid var(--color-border); background: var(--color-card); color: var(--color-fg); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: var(--text-sm); cursor: pointer; transition: all .15s ease; }
+  .sport:hover { background: var(--color-secondary); }
+  .sport.on { border-color: var(--sport); background: color-mix(in srgb, var(--sport) 14%, var(--color-card)); font-weight: 600; }
+  .dot { width: 10px; height: 10px; border-radius: 999px; background: var(--c, var(--sport)); flex: none; }
+  .demo { font-size: var(--text-xs); border: 1px dashed var(--color-warning); color: var(--color-warning); border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
+
+  /* layout */
+  .shell { flex: 1; display: flex; min-height: 0; }
+  .side { width: 240px; flex: none; background: var(--color-side-bg, var(--color-card)); color: var(--color-side-fg, var(--color-fg)); border-inline-end: 1px solid var(--color-border); padding: 12px 10px; }
+  .side h4 { margin: 14px 8px 6px; font-size: var(--text-xs); font-weight: 600; color: var(--color-side-muted, var(--color-muted-fg)); }
+  .nav { display: flex; align-items: center; gap: 8px; width: 100%; text-align: start; border: 0; background: transparent; color: inherit; font: inherit; font-size: var(--text-sm); padding: 9px 10px; border-radius: 10px; cursor: pointer; transition: all .15s ease; }
+  .nav:hover { background: var(--color-side-active, var(--color-secondary)); }
+  .nav.on { background: var(--color-side-active, var(--color-secondary)); font-weight: 700; box-shadow: inset -3px 0 0 var(--sport); }
+  .nav .ai { margin-inline-start: auto; }
+  .main { flex: 1; min-width: 0; padding: 20px; }
+  .page { max-width: 1060px; margin: 0 auto; }
+  @container (max-width: 820px) {
+    .shell { flex-direction: column; }
+    .side { width: auto; display: flex; gap: 4px; overflow-x: auto; padding: 8px; scrollbar-width: none; border-inline-end: 0; }
+    .side h4 { display: none; }
+    .nav { width: auto; white-space: nowrap; }
+    .nav.on { box-shadow: inset 0 -3px 0 var(--sport); }
+    .main { padding: 14px; }
+    .g2, .g3, .g4 { grid-template-columns: 1fr !important; }
+    .kpis { grid-template-columns: 1fr 1fr !important; }
+  }
+
+  /* pieces */
+  h1 { font-size: var(--text-2xl); margin: 0 0 4px; }
+  h2 { font-size: var(--text-lg); margin: 0 0 12px; }
+  .sub { color: var(--color-muted-fg); font-size: var(--text-sm); margin: 0 0 16px; }
+  .card { background: var(--color-card); border: 1px solid var(--color-border); border-radius: var(--radius-2xl); padding: 16px; }
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); } .g4 { grid-template-columns: repeat(4, 1fr); }
+  .kpis { grid-template-columns: repeat(4, 1fr); margin-bottom: 14px; }
+  .kpi b { display: block; font-size: 1.75rem; font-variant-numeric: tabular-nums; }
+  .kpi span { font-size: var(--text-sm); color: var(--color-muted-fg); }
+  .kpi small { display: block; margin-top: 4px; font-size: var(--text-xs); color: var(--color-success); }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .between { justify-content: space-between; }
+  .wrap { flex-wrap: wrap; }
+  .muted { color: var(--color-muted-fg); } .sm { font-size: var(--text-sm); } .xs { font-size: var(--text-xs); }
+  .mt { margin-top: 14px; } .mb { margin-bottom: 14px; }
+  .list > * + * { border-top: 1px solid var(--color-border); }
+  .item { padding: 12px 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .grow { flex: 1; min-width: 0; }
+  .btn { border: 1px solid transparent; border-radius: var(--radius-xl); padding: 10px 16px; font: inherit; font-size: var(--text-sm); font-weight: 600; cursor: pointer; transition: all .15s ease; white-space: nowrap; background: var(--color-primary); color: var(--color-primary-fg); }
+  .btn:hover { filter: brightness(1.1); } .btn:active { transform: scale(.98); }
+  .btn.ghost { background: transparent; border-color: var(--color-border); color: var(--color-fg); }
+  .btn.ghost:hover { background: var(--color-secondary); filter: none; }
+  .btn.sm { padding: 6px 12px; font-size: var(--text-xs); }
+  .btn.ok { background: var(--color-success); color: #fff; }
+  .btn.no { background: transparent; border-color: var(--color-destructive); color: var(--color-destructive); }
+  .btn[disabled] { opacity: .6; cursor: default; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 3px 10px; font-size: var(--text-xs); font-weight: 600; white-space: nowrap; background: var(--color-secondary); color: var(--color-fg); }
+  .badge.ok { background: color-mix(in srgb, var(--color-success) 16%, transparent); color: var(--color-success); }
+  .badge.warn { background: color-mix(in srgb, var(--color-warning) 18%, transparent); color: var(--color-warning); }
+  .badge.bad { background: color-mix(in srgb, var(--color-destructive) 14%, transparent); color: var(--color-destructive); }
+  .badge.info { background: color-mix(in srgb, var(--color-info) 14%, transparent); color: var(--color-info); }
+  .badge.live { background: var(--color-destructive); color: #fff; }
+  .ai { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 2px 8px; font-size: 11px; font-weight: 700; background: color-mix(in srgb, var(--color-accent) 22%, transparent); color: var(--color-accent); white-space: nowrap; }
+  .aibox { border: 1px solid color-mix(in srgb, var(--color-accent) 50%, transparent); background: color-mix(in srgb, var(--color-accent) 7%, var(--color-card)); border-radius: var(--radius-2xl); padding: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  th { text-align: start; font-size: var(--text-xs); color: var(--color-muted-fg); font-weight: 600; padding: 8px 6px; border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+  td { padding: 10px 6px; border-bottom: 1px solid var(--color-border); font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: 0; }
+  tr.click { cursor: pointer; transition: background .15s ease; } tr.click:hover { background: var(--color-muted); }
+  .num { text-align: center; } .scrollx { overflow-x: auto; }
+  .crest { width: 32px; height: 32px; border-radius: 999px; background: color-mix(in srgb, var(--sport) 16%, var(--color-card)); color: var(--sport); display: inline-grid; place-items: center; font-weight: 700; font-size: var(--text-sm); flex: none; border: 1px solid color-mix(in srgb, var(--sport) 40%, transparent); }
+  .crest.lg { width: 64px; height: 64px; font-size: 1.5rem; }
+  label { display: block; font-size: var(--text-sm); color: var(--color-muted-fg); margin-bottom: 6px; }
+  input, select { width: 100%; border: 1px solid var(--color-border); background: var(--color-muted); color: var(--color-fg); border-radius: var(--radius-xl); padding: 11px 12px; font: inherit; outline: none; transition: border-color .15s ease; }
+  input:focus, select:focus { border-color: var(--sport); }
+  .pick { border: 1px solid var(--color-border); background: var(--color-card); border-radius: 999px; padding: 7px 12px; font: inherit; font-size: var(--text-sm); cursor: pointer; transition: all .15s ease; color: var(--color-fg); }
+  .pick:hover { background: var(--color-secondary); }
+  .pick.on { background: color-mix(in srgb, var(--sport) 14%, var(--color-card)); border-color: var(--sport); font-weight: 600; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .score { display: flex; align-items: center; justify-content: center; gap: 22px; text-align: center; }
+  .score .n { font-size: 3rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+  .score .side-t { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 110px; font-weight: 700; }
+  .bar { height: 10px; border-radius: 999px; background: var(--color-secondary); overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 999px; background: var(--c, var(--sport)); transition: width .4s ease; }
+  .form i { display: inline-block; width: 9px; height: 9px; border-radius: 999px; margin-inline-end: 3px; background: var(--color-success); } .form i.l { background: var(--color-destructive); }
+  .next { margin-top: 20px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .spin { width: 18px; height: 18px; border: 3px solid var(--color-secondary); border-top-color: var(--sport); border-radius: 999px; animation: sp .8s linear infinite; display: inline-block; vertical-align: middle; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  .fade { animation: fd .25s ease; } @keyframes fd { from { opacity: 0; transform: translateY(6px); } }
+  .pulse { animation: pl 1.2s ease infinite; } @keyframes pl { 50% { opacity: .45; } }
+  .sheet { background: #fbf8ef; border: 1px solid #d9d2bd; border-radius: 6px; padding: 12px; transform: rotate(-1.2deg); font-size: 11px; color: #3b3626; box-shadow: 0 6px 16px rgba(0,0,0,.18); max-width: 300px; }
+  .sheet .ln { border-bottom: 1px solid #cfc7ae; padding: 4px 0; display: flex; justify-content: space-between; font-family: "Segoe Script", "Bradley Hand", cursive; }
+  .licence { border-radius: var(--radius-2xl); background: linear-gradient(135deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 60%, var(--sport))); color: var(--color-primary-fg); padding: 18px; }
+  .licence .muted { color: inherit; opacity: .75; }
+  .qr { width: 64px; height: 64px; border-radius: 8px; background: repeating-conic-gradient(#fff 0 25%, #111 0 50%) 0 0 / 14px 14px; border: 4px solid #fff; flex: none; }
+  #toast { position: fixed; bottom: 24px; inset-inline: 0; margin: 0 auto; width: fit-content; max-width: 90%; background: #0f172a; color: #fff; padding: 12px 18px; border-radius: 12px; font-size: var(--text-sm); opacity: 0; transform: translateY(10px); transition: all .25s ease; pointer-events: none; z-index: 9999; }
+  #toast.on { opacity: 1; transform: none; }
+
+  /* sketch toolbar (not part of the design) */
+  #sketch-tools { position: fixed; bottom: 12px; left: 12px; z-index: 9999; direction: ltr; font-family: system-ui; font-size: 12px; background: rgba(0,0,0,.75); color: #fff; padding: 8px 10px; border-radius: 8px; opacity: .4; transition: opacity .2s; display: flex; gap: 6px; align-items: center; }
+  #sketch-tools:hover { opacity: 1; }
+  #sketch-tools select, #sketch-tools button { width: auto; font: inherit; background: #222; color: #fff; border: 1px solid #555; border-radius: 6px; padding: 3px 6px; cursor: pointer; }
+  #anno { position: fixed; z-index: 9999; background: #111; color: #fff; font: 11px system-ui; padding: 4px 6px; border-radius: 4px; pointer-events: none; display: none; direction: ltr; }
+</style>
+<meta name="robots" content="noindex,nofollow">
+<style>#sketch-tools{display:none!important}</style>
+</head>
+<body>
+<div id="app">
+  <header class="top" id="top"></header>
+  <div class="shell">
+    <nav class="side" id="side"></nav>
+    <main class="main"><div class="page" id="page"></div></main>
+  </div>
+</div>
+<div id="toast"></div>
+<div id="anno"></div>
+<div id="sketch-tools">
+  <select title="Theme (variants)" onchange="document.getElementById('theme').textContent=THEMES[this.value]">
+    <option value="federation">A: Official</option>
+    <option value="default">B: App look</option>
+  </select>
+  <button onclick="vp('390px')">Phone</button><button onclick="vp('768px')">Tablet</button><button onclick="vp('100%')">Desktop</button>
+  <button onclick="annoOn=!annoOn;this.style.background=annoOn?'#2563eb':'#222'">Annotate</button>
+</div>
+
+<script>
+/* ============================================================
+   SWAP NAME / LOGO HERE — the only place the product name lives.
+   ============================================================ */
+const CONFIG = {
+  product: 'منصة البطولات',          // placeholder name (final name not decided)
+  ministry: 'وزارة الشباب والرياضة',
+  season: '2026 / 2027',
+  logoSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>'
+};
+
+const CLUBS = ['الأهلي','الزمالك','الاتحاد السكندري','سبورتنج','الجزيرة','سموحة','الطيران','المصرية للاتصالات'];
+const NAMES = ['يوسف هشام','عمر خالد','كريم سامي','أحمد مجدي','مروان عادل','زياد طارق','مصطفى نبيل','علي شريف','حازم فؤاد','آدم وائل','سيف رامي','مالك إيهاب'];
+const REFS = ['محمود السيد','هاني عبد الله','طارق منصور','شريف جلال','ياسر حمدي','وليد صبري'];
+const AGES = ['الرجال','السيدات','تحت 18 سنة','تحت 16 سنة','تحت 14 سنة'];
+const TEAM_FORMATS = ['دوري من دورين','مجموعات ثم أدوار إقصائية','خروج المغلوب'];
+const RACKET_FORMATS = ['خروج المغلوب (قرعة)','مجموعات ثم أدوار إقصائية','دوري تصنيف'];
+
+const SPORTS = {
+  basketball: { name:'كرة السلة', org:'اتحاد كرة السلة', color:'#e8590c', kind:'team', mode:'sum', unit:'نقطة',
+    periods:['الربع 1','الربع 2','الربع 3','الربع 4'], h:[21,18,19,20], a:[17,22,15,17],
+    stats:['نقاط','متابعات','تمريرات حاسمة'], hp:[22,18,15,13,10], ap:[24,16,14,10,7], leader:'الهدافون', leaderOne:'هدافين',
+    events:[['ثلاثية',3],['سلة من داخل المنطقة',2],['رمية حرة',1]], comp:'دوري المرتبط', pts:(w,l)=>w*2+l },
+  volleyball: { name:'الكرة الطائرة', org:'اتحاد الكرة الطائرة', color:'#1d6fb8', kind:'team', mode:'sets', unit:'شوط',
+    periods:['الشوط 1','الشوط 2','الشوط 3','الشوط 4'], h:[25,22,25,25], a:[21,25,19,23],
+    stats:['نقاط','إرسال ساحق','حوائط صد'], hp:[19,15,12,9,6], ap:[17,14,11,8,5], leader:'أفضل المسجلين', leaderOne:'مسجلين',
+    events:[['نقطة من ضربة ساحقة',1],['نقطة من حائط صد',1],['إرسال ساحق',1]], comp:'دوري الممتاز', pts:(w,l)=>w*3 },
+  handball: { name:'كرة اليد', org:'اتحاد كرة اليد', color:'#1e8e4e', kind:'team', mode:'sum', unit:'هدف',
+    periods:['الشوط الأول','الشوط الثاني'], h:[15,14], a:[12,14],
+    stats:['أهداف','تمريرات حاسمة','إيقاف دقيقتين'], hp:[9,7,6,4,3], ap:[8,7,5,4,2], leader:'الهدافون', leaderOne:'هدافين',
+    events:[['هدف',1],['هدف من رمية جزاء',1]], comp:'دوري المحترفين', pts:(w,l)=>w*2 },
+  padel: { name:'البادل', org:'اتحاد البادل', color:'#7b3fb5', kind:'racket', pairs:true, mode:'sets', unit:'مجموعة',
+    periods:['المجموعة 1','المجموعة 2','المجموعة 3'], h:[6,3,6], a:[4,6,3], leader:'المصنفون الأوائل', leaderOne:'مصنفين',
+    events:[['نقطة',1]], comp:'بطولة الجمهورية' },
+  tennis: { name:'التنس', org:'اتحاد التنس', color:'#2f8f2f', kind:'racket', mode:'sets', unit:'مجموعة',
+    periods:['المجموعة 1','المجموعة 2','المجموعة 3'], h:[6,4,7], a:[3,6,5], leader:'المصنفون الأوائل', leaderOne:'مصنفين',
+    events:[['نقطة',1]], comp:'بطولة الجمهورية' },
+  squash: { name:'الاسكواش', org:'اتحاد الاسكواش', color:'#c2255c', kind:'racket', mode:'sets', unit:'شوط',
+    periods:['الشوط 1','الشوط 2','الشوط 3','الشوط 4'], h:[11,11,9,11], a:[7,9,11,6], leader:'المصنفون الأوائل', leaderOne:'مصنفين',
+    events:[['نقطة',1]], comp:'بطولة الجمهورية' }
+};
+
+const SCREENS = [
+  ['ministry','الوزارة','نظرة عامة على كل الألعاب'],
+  ['home','إدارة الاتحاد','الرئيسية'],
+  ['create','إدارة الاتحاد','إنشاء بطولة'],
+  ['schedule','إدارة الاتحاد','جدول المباريات', true],
+  ['ask','إدارة الاتحاد','اسأل بياناتك', true],
+  ['comp','البطولة','صفحة البطولة'],
+  ['standings','البطولة','الترتيب'],
+  ['match','البطولة','المباراة'],
+  ['live','البطولة','النتيجة المباشرة', true],
+  ['report','البطولة','تقرير المباراة', true],
+  ['team','البطولة','الفريق'],
+  ['player','البطولة','اللاعب']
+];
+const STORY = ['home','create','schedule','comp','match','live','report','standings','team','player','ask','ministry'];
+
+const st = { sport:'basketball', screen:'home', pending:null, compTab:'teams', fixtures:null, showAll:false,
+  comp:{ name:'', age:'تحت 16 سنة', format:0, picked:null, start:'2027-01-15' }, live:null, liveTimer:null,
+  scan:0, report:0, reportTab:'official', approved:false, team:0, player:0, askLog:[], minSport:null };
+const S = () => SPORTS[st.sport];
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const sum = a => a.reduce((x, y) => x + y, 0);
+const rnd = s => { const x = Math.sin(s * 99.7) * 10000; return x - Math.floor(x); };
+const fmt = n => n.toLocaleString('en-US');
+const ini = n => n.replace('ال','').trim()[0];
+const DAYS = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+function dstr(d) { return DAYS[d.getDay()] + ' ' + String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); }
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('on'), 2600); }
+function entrants() { const s = S(); if (s.kind === 'team') return CLUBS; if (s.pairs) return [0,2,4,6,8,10].map(i => NAMES[i] + ' / ' + NAMES[i+1]); return NAMES.slice(0, 8); }
+function entLabel() { const s = S(); return s.kind === 'team' ? 'الفرق' : (s.pairs ? 'الثنائيات' : 'اللاعبون'); }
+function courts() { return S().kind === 'team' ? ['الصالة الرئيسية','الصالة الفرعية','صالة المدينة الرياضية','صالة مركز الشباب'] : ['الملعب الرئيسي','الملعب 1','الملعب 2','الملعب 3']; }
+function scoreOf(s, h, a, live) { h = h || s.h; a = a || s.a; if (s.mode === 'sum') return [sum(h), sum(a)]; if (live) { h = h.slice(0, -1); a = a.slice(0, -1); } return [h.filter((v,i) => v > a[i]).length, a.filter((v,i) => v > h[i]).length]; }
+function compName() { return st.comp.name || (S().comp + ' — ' + st.comp.age); }
+function crest(n, lg) { return '<span class="crest' + (lg ? ' lg' : '') + '">' + ini(n) + '</span>'; }
+function aiTag(t) { return '<span class="ai">✦ ' + (t || 'ذكاء اصطناعي') + '</span>'; }
+function nextBar() {
+  const i = STORY.indexOf(st.screen), n = STORY[i + 1], p = STORY[i - 1];
+  const nm = k => SCREENS.find(x => x[0] === k)[2];
+  return '<div class="next">' + (p ? '<button class="btn ghost" onclick="go(\'' + p + '\')">→ ' + nm(p) + '</button>' : '<span></span>') +
+    (n ? '<button class="btn" onclick="go(\'' + n + '\')">التالي: ' + nm(n) + ' ←</button>' : '<button class="btn" onclick="go(\'home\')">العودة إلى البداية ←</button>') + '</div>';
+}
+function typeInto(id, text, done) { const el = $(id); if (!el) return; let i = 0; el.textContent = ''; (function tick() { if (!$(id)) return; i += 3; el.textContent = text.slice(0, i); if (i < text.length) setTimeout(tick, 16); else if (done) done(); })(); }
+
+/* ---------- chrome ---------- */
+function renderTop() {
+  const s = S(), min = st.screen === 'ministry';
+  $('top').innerHTML = '<div class="brand"><span class="logo">' + CONFIG.logoSvg + '</span><div><b>' + CONFIG.product + '</b><span>' + (min ? CONFIG.ministry : s.org) + ' · موسم ' + CONFIG.season + '</span></div></div><span class="spacer"></span>' +
+    '<div class="sports">' + Object.keys(SPORTS).map(k => '<button class="sport' + (k === st.sport ? ' on' : '') + '" style="--sport:' + SPORTS[k].color + '" onclick="setSport(\'' + k + '\')"><span class="dot"></span>' + SPORTS[k].name + '</button>').join('') + '</div>' +
+    '<span class="demo">بيانات تجريبية</span>';
+}
+function renderSide() {
+  let g = '', h = '';
+  SCREENS.forEach(x => { if (x[1] !== g) { g = x[1]; h += '<h4>' + g + '</h4>'; }
+    const label = x[0] === 'team' && S().kind === 'racket' ? 'النادي' : x[0] === 'standings' && S().kind === 'racket' ? 'التصنيف' : x[2];
+    h += '<button class="nav' + (st.screen === x[0] ? ' on' : '') + '" onclick="go(\'' + x[0] + '\')">' + label + (x[3] ? aiTag('AI') : '') + '</button>'; });
+  $('side').innerHTML = h;
+}
+function go(k) { st.screen = k; if (k !== 'live') stopLive(); render(); window.scrollTo(0, 0); }
+function setSport(k) { stopLive(); Object.assign(st, { sport:k, pending:null, fixtures:null, live:null, scan:0, report:0, approved:false, team:0, player:0, askLog:[], showAll:false }); st.comp.picked = null; st.comp.name = ''; render(); toast('تم التبديل إلى ' + SPORTS[k].name); }
+function render() {
+  document.documentElement.style.setProperty('--sport', S().color);
+  renderTop(); renderSide();
+  $('page').innerHTML = '<div class="fade">' + VIEWS[st.screen]() + nextBar() + '</div>';
+  if (AFTER[st.screen]) AFTER[st.screen]();
+}
+
+/* ---------- 1. federation admin home ---------- */
+function pendingList() {
+  if (!st.pending) { const e = S().kind === 'team';
+    st.pending = [
+      { t: e ? 'قيد نادٍ جديد' : 'قيد أكاديمية جديدة', n: e ? 'نادي الشمس' : 'أكاديمية الشمس', d: 'مستندات كاملة · منطقة القاهرة' },
+      { t: 'قيد لاعبين', n: 'سموحة — 14 لاعباً تحت 16 سنة', d: 'شهادات الميلاد مرفوعة · منطقة الإسكندرية' },
+      { t: 'انتقال لاعب', n: NAMES[4] + ' — من الجزيرة إلى سبورتنج', d: 'موافقة الناديين مرفقة' },
+      { t: 'تجديد رخصة حكم', n: REFS[3], d: 'الدرجة الأولى · تنتهي 31/12/2026' }
+    ]; }
+  return st.pending;
+}
+function approve(i, ok) { const p = pendingList().splice(i, 1)[0]; render(); toast((ok ? 'تم الاعتماد: ' : 'تم الرفض: ') + p.n); }
+const VIEWS = {};
+const AFTER = {};
+VIEWS.home = () => { const s = S(), p = pendingList(), e = entrants(), team = s.kind === 'team';
+  return '<h1>لوحة ' + s.org + '</h1><p class="sub">كل ما يحتاج قرارك اليوم في مكان واحد.</p>' +
+  '<div class="grid kpis">' +
+    '<div class="card kpi"><b>' + fmt(team ? 18420 : 6240) + '</b><span>لاعب ولاعبة مقيدون</span><small>+312 هذا الشهر</small></div>' +
+    '<div class="card kpi"><b>' + (team ? 214 : 96) + '</b><span>' + (team ? 'نادٍ وهيئة' : 'نادٍ وأكاديمية') + '</span><small>+6 هذا الموسم</small></div>' +
+    '<div class="card kpi"><b>27</b><span>بطولة جارية</span><small>في 14 منطقة</small></div>' +
+    '<div class="card kpi"><b>' + p.length + '</b><span>طلبات تنتظر الاعتماد</span><small style="color:var(--color-warning)">' + (p.length ? 'تحتاج مراجعتك' : 'لا شيء معلّق') + '</small></div>' +
+  '</div><div class="grid g2">' +
+  '<div class="card"><div class="row between"><h2>طلبات تنتظر الاعتماد</h2><span class="badge warn">' + p.length + '</span></div><div class="list">' +
+    (p.length ? p.map((x, i) => '<div class="item"><div class="grow"><div class="row wrap"><span class="badge info">' + x.t + '</span><b class="sm">' + x.n + '</b></div><div class="xs muted">' + x.d + '</div></div><button class="btn sm ok" onclick="approve(' + i + ',1)">اعتماد</button><button class="btn sm no" onclick="approve(' + i + ',0)">رفض</button></div>').join('')
+      : '<div class="item muted sm">لا توجد طلبات معلّقة. كل شيء معتمد.</div>') + '</div></div>' +
+  '<div class="card"><h2>مباريات اليوم</h2><div class="list">' +
+    [[0,1,'19:00',1],[2,3,'17:00',0],[4,5,'21:00',0]].map((m, i) => '<div class="item"><div class="grow"><b class="sm">' + e[m[0]] + ' × ' + e[m[1]] + '</b><div class="xs muted">' + m[2] + ' · ' + courts()[i] + ' · ' + REFS[i] + '</div></div>' + (m[3] ? '<span class="badge live pulse">مباشر</span><button class="btn sm ghost" onclick="go(\'live\')">متابعة</button>' : '<span class="badge">لم تبدأ</span>') + '</div>').join('') +
+  '</div><div class="row mt wrap"><button class="btn" onclick="go(\'create\')">+ إنشاء بطولة</button><button class="btn ghost" onclick="go(\'ask\')">اسأل بياناتك ' + aiTag('AI') + '</button></div></div></div>' +
+  '<div class="card mt"><h2>تنبيهات</h2><div class="list">' +
+    '<div class="item"><span class="badge warn">رخص</span><span class="sm grow">86 رخصة لاعب تنتهي خلال 30 يوماً</span></div>' +
+    '<div class="item"><span class="badge bad">نتائج</span><span class="sm grow">مباراتان من الجولة 14 بلا تقرير معتمد</span><button class="btn sm ghost" onclick="go(\'report\')">فتح</button></div>' +
+    '<div class="item"><span class="badge info">ملاعب</span><span class="sm grow">' + courts()[2] + ' غير متاحة يوم الجمعة — ' + aiTag() + ' اقترح بديلاً للمباراتين المتأثرتين</span><button class="btn sm ghost" onclick="go(\'schedule\')">عرض</button></div>' +
+  '</div></div>'; };
+
+/* ---------- 2. create competition ---------- */
+function picked() { if (!st.comp.picked) st.comp.picked = entrants().map(() => true); return st.comp.picked; }
+function togglePick(i) { picked()[i] = !picked()[i]; render(); }
+function createComp() { const n = picked().filter(Boolean).length; if (n < 2) { toast('اختر مشاركَين على الأقل'); return; }
+  const v = $('cname').value.trim(); if (!v) { $('cname').style.borderColor = 'var(--color-destructive)'; toast('اكتب اسم البطولة'); return; }
+  st.comp.name = v; st.comp.start = $('cstart').value || st.comp.start; st.fixtures = null;
+  const b = $('cbtn'); b.disabled = true; b.innerHTML = '<span class="spin"></span> جارٍ الإنشاء…';
+  setTimeout(() => { toast('تم إنشاء البطولة: ' + v); go('schedule'); }, 900); }
+VIEWS.create = () => { const s = S(), e = entrants(), p = picked(), f = s.kind === 'team' ? TEAM_FORMATS : RACKET_FORMATS;
+  return '<h1>إنشاء بطولة</h1><p class="sub">أربع خطوات قصيرة، ثم يبني النظام الجدول وحده.</p><div class="card">' +
+  '<div class="grid g2"><div><label>اسم البطولة</label><input id="cname" value="' + (st.comp.name || s.comp + ' ' + st.comp.age) + '" onblur="this.style.borderColor=this.value.trim()?\'\':\'var(--color-destructive)\'"></div>' +
+  '<div><label>الموسم</label><select><option>' + CONFIG.season + '</option><option>2027 / 2028</option></select></div></div>' +
+  '<div class="mt"><label>المرحلة السنية</label><div class="row wrap">' + AGES.map(a => '<button class="pick' + (a === st.comp.age ? ' on' : '') + '" onclick="st.comp.age=\'' + a + '\';st.comp.name=\'\';render()">' + a + '</button>').join('') + '</div></div>' +
+  '<div class="mt"><label>نظام البطولة</label><div class="row wrap">' + f.map((a, i) => '<button class="pick' + (i === st.comp.format ? ' on' : '') + '" onclick="st.comp.format=' + i + ';render()">' + a + '</button>').join('') + '</div></div>' +
+  '<div class="mt"><label>' + entLabel() + ' المشاركة (' + p.filter(Boolean).length + ' من ' + e.length + ')</label><div class="row wrap">' + e.map((a, i) => '<button class="pick' + (p[i] ? ' on' : '') + '" onclick="togglePick(' + i + ')">' + (p[i] ? '✓ ' : '') + a + '</button>').join('') + '</div><div class="xs muted" style="margin-top:6px">تظهر هنا الجهات ذات القيد الساري فقط.</div></div>' +
+  '<div class="grid g2 mt"><div><label>تاريخ البداية</label><input id="cstart" type="date" value="' + st.comp.start + '"></div><div><label>أيام اللعب</label><select><option>الجمعة والسبت</option><option>الخميس والجمعة</option><option>كل أيام الأسبوع</option></select></div></div>' +
+  '<div class="row mt"><button class="btn" id="cbtn" onclick="createComp()">إنشاء البطولة</button><span class="xs muted">الخطوة التالية: الجدول يُبنى تلقائياً</span></div></div>'; };
+
+/* ---------- 3. schedule ---------- */
+function buildFixtures() { const e = entrants().filter((_, i) => picked()[i]); const t = e.slice(); if (t.length % 2) t.push(null);
+  const n = t.length, rounds = [], c = courts(), d0 = new Date(st.comp.start + 'T12:00:00'); let k = 0;
+  for (let r = 0; r < n - 1; r++) { const ms = [];
+    for (let i = 0; i < n / 2; i++) { const a = t[i], b = t[n - 1 - i]; if (a && b) { const d = new Date(d0); d.setDate(d0.getDate() + r * 7 + (i % 2));
+      ms.push({ h: r % 2 ? b : a, a: r % 2 ? a : b, d, time: ['17:00','19:00'][i % 2], court: c[(i + r) % c.length], ref: REFS[(k++) % REFS.length], state: 'ok' }); } }
+    rounds.push(ms); t.splice(1, 0, t.pop()); }
+  return rounds; }
+function genSchedule() { $('gen').innerHTML = '<div class="aibox"><span class="spin"></span> <b class="sm">يبني الجدول…</b><div class="xs muted" id="genmsg" style="margin-top:6px"></div></div>';
+  const steps = ['يراجع الملاعب المتاحة في كل منطقة…','يوزّع أيام الراحة بين المباريات…','يوازن بين مباريات الأرض وخارجها…','يعيّن الحكام حسب الدرجة والتواجد…']; let i = 0;
+  (function tick() { if (!$('genmsg')) return; if (i < steps.length) { $('genmsg').textContent = steps[i++]; setTimeout(tick, 550); } else { st.fixtures = buildFixtures(); render(); toast('الجدول جاهز بلا أي تعارض'); } })(); }
+function postpone(r, i) { st.fixtures[r][i].state = 'ask'; render(); }
+function acceptNew(r, i) { const m = st.fixtures[r][i]; const d = new Date(m.d); d.setDate(d.getDate() + 3); m.d = d; m.time = '19:00'; m.court = courts()[1]; m.state = 'moved'; render(); toast('تم تعديل الموعد وإخطار الفريقين والحكام'); }
+VIEWS.schedule = () => { const s = S();
+  if (!st.fixtures) return '<h1>جدول المباريات</h1><p class="sub">' + compName() + '</p><div id="gen"><div class="card" style="text-align:center;padding:40px 16px"><h2>لا يوجد جدول بعد</h2><p class="sub">النظام يبني جدول الموسم كله في ثوانٍ، حسب الملاعب المتاحة وأيام الراحة.</p><button class="btn" onclick="genSchedule()">✦ توليد الجدول تلقائياً</button></div></div>';
+  const R = st.fixtures, total = sum(R.map(x => x.length)), show = st.showAll ? R : R.slice(0, 2);
+  const nd = m => { const d = new Date(m.d); d.setDate(d.getDate() + 3); return dstr(d); };
+  return '<div class="row between wrap"><div><h1>جدول المباريات</h1><p class="sub">' + compName() + '</p></div><button class="btn ghost" onclick="st.fixtures=null;render()">إعادة التوليد</button></div>' +
+  '<div class="aibox mb"><div class="row wrap">' + aiTag('جدول مولّد آلياً') + '<b class="sm">' + total + ' مباراة · ' + R.length + ' جولة</b><span class="badge ok">لا تعارض في الملاعب</span><span class="badge ok">يوم راحة على الأقل بين كل مباراتين</span><span class="badge ok">حكام معيّنون لكل المباريات</span></div></div>' +
+  show.map((ms, r) => '<div class="card mb"><h2>الجولة ' + (r + 1) + '</h2><div class="list">' + ms.map((m, i) =>
+    '<div class="item"><div class="grow"><b class="sm">' + m.h + ' × ' + m.a + '</b><div class="xs muted">' + dstr(m.d) + ' · ' + m.time + ' · ' + m.court + ' · الحكم: ' + m.ref + '</div></div>' +
+    (m.state === 'moved' ? '<span class="badge info">تم تعديل الموعد</span>' : m.state === 'ask' ? '' : '<button class="btn sm ghost" onclick="postpone(' + r + ',' + i + ')">تأجيل</button>') +
+    (m.state === 'ask' ? '<div class="aibox fade" style="flex-basis:100%"><div class="row wrap">' + aiTag('اقتراح') + '<span class="sm grow">أقرب موعد مناسب: <b>' + nd(m) + ' — 19:00 — ' + courts()[1] + '</b><br><span class="xs muted">الملعب متاح، والفريقان في راحة، والحكم متاح.</span></span><button class="btn sm" onclick="acceptNew(' + r + ',' + i + ')">قبول</button><button class="btn sm ghost" onclick="st.fixtures[' + r + '][' + i + '].state=\'ok\';render()">إلغاء</button></div></div>' : '') +
+    '</div>').join('') + '</div></div>').join('') +
+  (R.length > 2 ? '<button class="btn ghost" onclick="st.showAll=!st.showAll;render()">' + (st.showAll ? 'عرض أقل' : 'عرض كل الجولات (' + R.length + ')') + '</button>' : ''); };
+
+/* ---------- 4. competition page ---------- */
+function leaders() { const s = S(), team = s.kind === 'team'; return [0,1,2,3,4].map(i => ({ n: NAMES[i * 2 % NAMES.length], c: CLUBS[i], v: team ? (s.mode === 'sum' && s.unit === 'نقطة' ? (24.6 - i * 1.7).toFixed(1) : (8.4 - i * 0.6).toFixed(1)) : fmt(2450 - i * 140) })); }
+VIEWS.comp = () => { const s = S(), e = entrants(), L = leaders(), team = s.kind === 'team';
+  const tabs = [['teams', entLabel()], ['leaders', s.leader], ['matches', 'المباريات']];
+  let body = '';
+  if (st.compTab === 'teams') body = '<div class="grid g4">' + e.map((n, i) => '<div class="card" style="cursor:pointer;text-align:center" onclick="st.team=' + (team ? i : i % CLUBS.length) + ';' + (team ? 'go(\'team\')' : 'st.player=' + i + ';go(\'player\')') + '">' + crest(n, 1) + '<div class="sm" style="font-weight:700;margin-top:8px">' + n + '</div><div class="xs muted">' + (team ? '15 لاعباً مقيداً' : CLUBS[i % CLUBS.length]) + '</div></div>').join('') + '</div>';
+  if (st.compTab === 'leaders') body = '<div class="card scrollx"><table><tr><th>#</th><th>اللاعب</th><th>النادي</th><th class="num">' + (team ? 'المعدل في المباراة' : 'نقاط التصنيف') + '</th></tr>' + L.map((x, i) => '<tr class="click" onclick="st.player=' + i + ';go(\'player\')"><td>' + (i + 1) + '</td><td><b>' + x.n + '</b></td><td>' + x.c + '</td><td class="num"><b>' + x.v + '</b></td></tr>').join('') + '</table></div>';
+  if (st.compTab === 'matches') body = '<div class="card list">' + [[0,1,'انتهت',1],[2,3,'مباشر',2],[4,5,'غداً 19:00',0]].map(m => { const sc = scoreOf(s); return '<div class="item" style="cursor:pointer" onclick="go(\'' + (m[3] === 2 ? 'live' : 'match') + '\')"><div class="grow"><b class="sm">' + e[m[0]] + ' × ' + e[m[1]] + '</b><div class="xs muted">الجولة 15 · ' + courts()[m[0] % 4] + '</div></div>' + (m[3] === 1 ? '<b>' + sc[0] + ' - ' + sc[1] + '</b><span class="badge ok">معتمدة</span>' : m[3] === 2 ? '<span class="badge live pulse">مباشر</span>' : '<span class="badge">' + m[2] + '</span>') + '</div>'; }).join('') + '</div>';
+  return '<div class="card mb"><div class="row wrap"><span class="crest lg" style="border-radius:16px">' + ini(s.name) + '</span><div class="grow"><h1>' + compName() + '</h1><div class="row wrap"><span class="badge">' + s.org + '</span><span class="badge">موسم ' + CONFIG.season + '</span><span class="badge info">' + (team ? TEAM_FORMATS : RACKET_FORMATS)[st.comp.format] + '</span><span class="badge ok">الجولة 15</span></div></div><button class="btn ghost" onclick="go(\'standings\')">' + (team ? 'الترتيب' : 'التصنيف') + '</button></div></div>' +
+  '<div class="tabs">' + tabs.map(t => '<button class="pick' + (st.compTab === t[0] ? ' on' : '') + '" onclick="st.compTab=\'' + t[0] + '\';render()">' + t[1] + '</button>').join('') + '</div>' + body; };
+
+/* ---------- shared match bits ---------- */
+function scoreboard(s, e, h, a, extra, live) { const sc = scoreOf(s, h, a, live);
+  return '<div class="score"><div class="side-t">' + crest(e[0], 1) + '<span class="sm">' + e[0] + '</span></div><div><div class="row" style="justify-content:center;gap:14px"><span class="n">' + sc[0] + '</span><span class="muted">-</span><span class="n">' + sc[1] + '</span></div>' + (extra || '') + '</div><div class="side-t">' + crest(e[1], 1) + '<span class="sm">' + e[1] + '</span></div></div>'; }
+function periodTable(s, e, h, a, live) { h = h || s.h; a = a || s.a; return '<div class="scrollx"><table><tr><th></th>' + s.periods.slice(0, h.length).map(p => '<th class="num">' + p + '</th>').join('') + '<th class="num">' + (s.mode === 'sum' ? 'المجموع' : 'النتيجة') + '</th></tr>' +
+  [[e[0], h, 0], [e[1], a, 1]].map(r => '<tr><td><b>' + r[0] + '</b></td>' + r[1].map(v => '<td class="num">' + v + '</td>').join('') + '<td class="num"><b>' + scoreOf(s, h, a, live)[r[2]] + '</b></td></tr>').join('') + '</table></div>'; }
+function statTable(s, team, vals, off) { return '<div class="scrollx"><table><tr><th>' + team + '</th>' + s.stats.map(x => '<th class="num">' + x + '</th>').join('') + '</tr>' + vals.map((v, i) => '<tr class="click" onclick="st.player=' + (i + off) + ';go(\'player\')"><td>' + NAMES[(i + off) % NAMES.length] + '</td><td class="num"><b>' + v + '</b></td><td class="num">' + Math.round(rnd(i + off + 3) * 8 + 1) + '</td><td class="num">' + Math.round(rnd(i + off + 9) * 6) + '</td></tr>').join('') + '</table></div>'; }
+
+/* ---------- 5. match page ---------- */
+VIEWS.match = () => { const s = S(), e = entrants(), team = s.kind === 'team';
+  return '<p class="sub" style="margin:0 0 8px">' + compName() + ' · الجولة 15</p><div class="card mb">' + scoreboard(s, e, null, null, '<div class="row" style="justify-content:center;margin-top:8px"><span class="badge ' + (st.approved ? 'ok">نتيجة معتمدة' : 'warn">في انتظار اعتماد التقرير') + '</span></div>') +
+  '<div class="row wrap mt" style="justify-content:center"><span class="badge">الجمعة 22/01/2027 · 19:00</span><span class="badge">' + courts()[0] + '</span><button class="btn sm ghost" onclick="go(\'report\')">تقرير المباراة ' + aiTag('AI') + '</button></div></div>' +
+  '<div class="grid g2"><div class="card"><h2>' + (s.mode === 'sum' ? 'النتيجة حسب الفترات' : 'نتيجة كل ' + s.unit) + '</h2>' + periodTable(s, e) + '</div>' +
+  '<div class="card"><h2>طاقم المباراة</h2><div class="list">' + [['الحكم الأول', 0], [team ? 'الحكم الثاني' : 'حكم الخط', 1], [team ? 'المسجّل' : 'مراقب المباراة', 2], ['مراقب الاتحاد', 4]].map(r => '<div class="item"><span class="muted sm" style="width:110px">' + r[0] + '</span><b class="sm grow">' + REFS[r[1]] + '</b><span class="badge ok">رخصة سارية</span></div>').join('') + '</div></div></div>' +
+  (team ? '<div class="grid g2 mt"><div class="card"><h2>' + e[0] + '</h2>' + statTable(s, 'اللاعب', s.hp, 0) + '</div><div class="card"><h2>' + e[1] + '</h2>' + statTable(s, 'اللاعب', s.ap, 5) + '</div></div>'
+        : '<div class="card mt"><h2>إحصاءات المباراة</h2><div class="list">' + [['نقاط الفوز المباشرة', 24, 19], ['الأخطاء غير المجبرة', 14, 21], ['نقاط كسر الإرسال', 4, 2]].map(r => '<div class="item"><b style="width:40px">' + r[1] + '</b><div class="grow"><div class="sm" style="text-align:center">' + r[0] + '</div><div class="bar"><i style="width:' + Math.round(r[1] / (r[1] + r[2]) * 100) + '%"></i></div></div><b style="width:40px;text-align:end">' + r[2] + '</b></div>').join('') + '</div></div>'); };
+
+/* ---------- 6. live score ---------- */
+function liveInit() { const s = S(), n = s.periods.length; if (s.mode === 'sum') { const k = n > 2 ? n - 1 : 1; st.live = { h: s.h.slice(0, k), a: s.a.slice(0, k), feed: [], on: false, left: 14 }; st.live.h[k - 1] -= 4; st.live.a[k - 1] -= 6; }
+  else { st.live = { h: s.h.slice(0, 2).concat([Math.min(4, s.h[2] - 2)]), a: s.a.slice(0, 2).concat([Math.min(3, s.a[2] - 1)]), feed: [], on: false, left: 12 }; } }
+function stopLive() { clearInterval(st.liveTimer); st.liveTimer = null; if (st.live) st.live.on = false; }
+function toggleLive() { const L = st.live; if (L.on) { stopLive(); render(); return; } if (L.left <= 0) { liveInit(); }
+  st.live.on = true; render();
+  st.liveTimer = setInterval(() => { const L = st.live, s = S(), e = entrants(), home = rnd(L.left * 7 + L.feed.length) > 0.42, ev = s.events[Math.floor(rnd(L.left * 3 + 1) * s.events.length)], i = L.h.length - 1;
+    if (home) L.h[i] += ev[1]; else L.a[i] += ev[1];
+    const who = s.kind === 'team' ? NAMES[Math.floor(rnd(L.left + 5) * 5) + (home ? 0 : 5)] + ' (' + e[home ? 0 : 1] + ')' : e[home ? 0 : 1];
+    L.feed.unshift({ t: ev[0], who, sc: L.h[i] + ' - ' + L.a[i] }); L.left--;
+    if (L.left <= 0) { stopLive(); toast('انتهت المحاكاة'); } render(); }, 1300); }
+function scanSheet() { st.scan = 1; render(); setTimeout(() => { if (st.screen !== 'live') return; st.scan = 2; render(); }, 1900); }
+function confirmScan() { st.scan = 3; render(); toast('تم حفظ بيانات الاستمارة في سجل المباراة'); }
+VIEWS.live = () => { const s = S(), e = entrants(); if (!st.live) liveInit(); const L = st.live, cur = s.periods[L.h.length - 1];
+  const sheet = '<div class="sheet"><b>استمارة تسجيل المباراة</b><div class="xs" style="margin-bottom:6px">' + e[0] + ' × ' + e[1] + '</div>' + [0,1,2,3].map(i => '<div class="ln"><span>' + NAMES[i] + '</span><span>' + (s.hp ? s.hp[i] : 6 - i) + '</span></div>').join('') + '<div class="ln"><span>توقيع الحكم</span><span>✓</span></div></div>';
+  let scan = '<div class="row wrap"><div class="grow"><h2 style="margin:0">الاستمارة الورقية ' + aiTag() + '</h2><div class="xs muted">صوّر الاستمارة بعد المباراة، والنظام يحوّلها إلى أرقام.</div></div><button class="btn" onclick="scanSheet()">📷 تصوير الاستمارة</button></div>';
+  if (st.scan === 1) scan = '<div class="row wrap">' + sheet + '<div class="grow"><span class="spin"></span> <b class="sm">يقرأ الاستمارة…</b><div class="xs muted">يتعرّف على الأسماء والأرقام المكتوبة بخط اليد</div></div></div>';
+  if (st.scan >= 2) scan = '<div class="row wrap" style="align-items:flex-start">' + sheet + '<div class="grow fade"><div class="row wrap mb">' + aiTag('تم الاستخراج') + '<b class="sm">24 سطراً · دقة القراءة 98%</b></div><table><tr><th>اللاعب</th><th class="num">' + (s.stats ? s.stats[0] : 'أشواط') + '</th><th>الحالة</th></tr>' + [0,1,2,3].map(i => '<tr><td>' + NAMES[i] + '</td><td class="num"><b>' + (s.hp ? s.hp[i] : 6 - i) + '</b></td><td>' + (i === 2 ? '<span class="badge warn">راجِع الرقم</span>' : '<span class="badge ok">مطابق</span>') + '</td></tr>').join('') + '</table><div class="row mt">' + (st.scan === 3 ? '<span class="badge ok">تم الحفظ</span>' : '<button class="btn" onclick="confirmScan()">تأكيد وحفظ</button><button class="btn ghost" onclick="st.scan=0;render()">إعادة التصوير</button>') + '</div></div></div>';
+  return '<p class="sub" style="margin:0 0 8px">' + compName() + ' · الجولة 15</p><div class="card mb">' + scoreboard(s, e, L.h, L.a, '<div class="row" style="justify-content:center;margin-top:8px"><span class="badge live' + (L.on ? ' pulse' : '') + '">' + (L.on ? 'مباشر' : 'متوقف') + '</span><span class="badge">' + cur + (s.mode === 'sets' ? ' · ' + L.h[L.h.length - 1] + ' - ' + L.a[L.a.length - 1] : '') + '</span></div>', true) +
+  '<div class="row mt" style="justify-content:center"><button class="btn" onclick="toggleLive()">' + (L.on ? '⏸ إيقاف' : L.left <= 0 ? '↻ إعادة المحاكاة' : '▶ تشغيل المحاكاة') + '</button></div></div>' +
+  '<div class="grid g2"><div class="card"><h2>' + (s.mode === 'sum' ? 'النتيجة حسب الفترات' : 'نتيجة كل ' + s.unit) + '</h2>' + periodTable(s, e, L.h, L.a, true) + '</div>' +
+  '<div class="card"><h2>أحداث المباراة</h2><div class="list" style="max-height:230px;overflow-y:auto">' + (L.feed.length ? L.feed.map(f => '<div class="item fade"><span class="badge">' + f.sc + '</span><span class="sm grow"><b>' + f.t + '</b> — ' + f.who + '</span></div>').join('') : '<div class="item muted sm">اضغط «تشغيل المحاكاة» لترى النتيجة تتغير لحظة بلحظة.</div>') + '</div></div></div>' +
+  '<div class="aibox mt">' + scan + '</div>'; };
+
+/* ---------- 7. match report ---------- */
+function reportText(kind) { const s = S(), e = entrants(), sc = scoreOf(s), team = s.kind === 'team', court = courts()[0];
+  const per = s.periods.map((p, i) => p + ' ' + s.h[i] + '-' + s.a[i]).join('، ');
+  if (kind === 'official') return 'تقرير رسمي — ' + compName() + ' — الجولة 15\n\nأقيمت المباراة يوم الجمعة 22/01/2027 في الساعة 19:00 على ' + court + ' بين ' + e[0] + ' و' + e[1] + '.\n\nالنتيجة النهائية: ' + e[0] + ' ' + sc[0] + ' - ' + sc[1] + ' ' + e[1] + '.\nالتفاصيل: ' + per + '.\n\nطاقم المباراة: الحكم الأول ' + REFS[0] + '، ' + (team ? 'الحكم الثاني ' : 'حكم الخط ') + REFS[1] + '، مراقب الاتحاد ' + REFS[4] + '.\n\n' + (team ? 'أبرز الأرقام: ' + NAMES[0] + ' (' + e[0] + ') ' + s.hp[0] + ' ' + s.stats[0] + '، ' + NAMES[5] + ' (' + e[1] + ') ' + s.ap[0] + ' ' + s.stats[0] + '.\n\n' : '') + 'الملاحظات الانضباطية: لا توجد.\nالاحتجاجات: لم يُسجَّل أي احتجاج خلال المهلة القانونية.\n\nالتقرير جاهز للاعتماد.';
+  return (team ? e[0] + ' يحسم القمة أمام ' + e[1] : e[0] + ' إلى الدور التالي بعد مواجهة قوية') + '\n\nحقق ' + e[0] + ' فوزاً مهماً على ' + e[1] + ' بنتيجة ' + sc[0] + '-' + sc[1] + ' في المباراة التي أقيمت مساء الجمعة على ' + court + ' ضمن الجولة 15 من ' + compName() + '.\n\n' + (team ? 'وتألق ' + NAMES[0] + ' مسجلاً ' + s.hp[0] + ' ' + s.stats[0] + '، بينما كان ' + NAMES[5] + ' الأفضل في صفوف ' + e[1] + ' برصيد ' + s.ap[0] + '.' : 'وجاءت المواجهة متقاربة، وحسمها الفائز في ' + s.periods[s.periods.length - 1] + ' بعد تعادل الطرفين.') + '\n\nوبهذه النتيجة يواصل ' + e[0] + ' تقدمه في ' + (team ? 'جدول الترتيب' : 'البطولة') + '.'; }
+function writeReport() { st.report = 1; render(); setTimeout(() => { if (st.screen !== 'report') return; typeInto('rtext', reportText(st.reportTab), () => { st.report = 2; if (st.screen === 'report') render(); }); }, 700); }
+VIEWS.report = () => { const s = S(), e = entrants(), sc = scoreOf(s);
+  let body = '<div style="text-align:center;padding:24px 8px"><p class="sub">المباراة انتهت. بدلاً من كتابة التقرير باليد، يكتبه النظام من بيانات الاستمارة.</p><button class="btn" onclick="writeReport()">✦ اكتب التقرير بالذكاء الاصطناعي</button></div>';
+  if (st.report === 1) body = '<div class="row mb"><span class="spin"></span><b class="sm">يكتب التقرير من بيانات المباراة…</b></div><pre id="rtext" style="white-space:pre-wrap;font:inherit;line-height:1.9;margin:0"></pre>';
+  if (st.report === 2) body = '<div class="tabs"><button class="pick' + (st.reportTab === 'official' ? ' on' : '') + '" onclick="st.reportTab=\'official\';render()">التقرير الرسمي</button><button class="pick' + (st.reportTab === 'news' ? ' on' : '') + '" onclick="st.reportTab=\'news\';render()">خبر للنشر</button></div><pre class="fade" style="white-space:pre-wrap;font:inherit;line-height:1.9;margin:0">' + reportText(st.reportTab) + '</pre><div class="row wrap mt">' + (st.approved ? '<span class="badge ok">تم الاعتماد والنشر</span>' : '<button class="btn ok" onclick="st.approved=true;render();toast(\'تم اعتماد النتيجة ونشرها للجمهور\')">اعتماد النتيجة ونشرها</button>') + '<button class="btn ghost" onclick="toast(\'تم نسخ النص\')">نسخ</button><button class="btn ghost" onclick="st.report=0;st.approved=false;render()">إعادة الكتابة</button><span class="xs muted">يمكن تعديل النص قبل الاعتماد.</span></div>';
+  return '<h1>تقرير المباراة</h1><p class="sub">' + e[0] + ' ' + sc[0] + ' - ' + sc[1] + ' ' + e[1] + ' · ' + compName() + '</p><div class="aibox">' + '<div class="row mb">' + aiTag('تقرير آلي') + '<span class="xs muted">المصدر: استمارة التسجيل + سجل الأحداث</span></div>' + body + '</div>'; };
+
+/* ---------- 8. standings / ranking ---------- */
+VIEWS.standings = () => { const s = S(), team = s.kind === 'team';
+  if (team) { const W = [12,11,9,8,6,5,3,2];
+    return '<h1>الترتيب</h1><p class="sub">' + compName() + ' · يتحدّث تلقائياً بعد اعتماد كل نتيجة.</p><div class="card scrollx"><table><tr><th>#</th><th>الفريق</th><th class="num">لعب</th><th class="num">فوز</th><th class="num">خسارة</th><th class="num">نقاط</th><th>آخر 5</th></tr>' +
+    CLUBS.map((c, i) => '<tr class="click" onclick="st.team=' + i + ';go(\'team\')"><td>' + (i + 1) + '</td><td><span class="row">' + crest(c) + '<b>' + c + '</b></span></td><td class="num">14</td><td class="num">' + W[i] + '</td><td class="num">' + (14 - W[i]) + '</td><td class="num"><b>' + s.pts(W[i], 14 - W[i]) + '</b></td><td class="form">' + [0,1,2,3,4].map(k => '<i class="' + (rnd(i * 5 + k) * 14 < W[i] ? '' : 'l') + '"></i>').join('') + '</td></tr>').join('') + '</table></div>' +
+    '<div class="row wrap mt"><span class="badge ok">المراكز 1-4: الأدوار النهائية</span><span class="badge bad">المركزان 7-8: الهبوط</span></div>'; }
+  const e = entrants();
+  return '<h1>التصنيف</h1><p class="sub">' + s.org + ' · ' + st.comp.age + ' · يتحدّث تلقائياً بعد كل بطولة.</p><div class="card scrollx"><table><tr><th>#</th><th>' + (s.pairs ? 'الثنائي' : 'اللاعب') + '</th><th>النادي</th><th class="num">بطولات</th><th class="num">نقاط التصنيف</th><th>التغيّر</th></tr>' +
+  e.map((n, i) => '<tr class="click" onclick="st.player=' + i + ';go(\'player\')"><td>' + (i + 1) + '</td><td><b>' + n + '</b></td><td>' + CLUBS[i % CLUBS.length] + '</td><td class="num">' + (9 - (i % 3)) + '</td><td class="num"><b>' + fmt(2450 - i * 135) + '</b></td><td>' + (i % 3 === 0 ? '<span class="badge ok">▲ 2</span>' : i % 3 === 1 ? '<span class="badge">—</span>' : '<span class="badge bad">▼ 1</span>') + '</td></tr>').join('') + '</table></div>'; };
+
+/* ---------- 9. team / club page ---------- */
+VIEWS.team = () => { const s = S(), c = CLUBS[st.team], team = s.kind === 'team';
+  return '<div class="card mb"><div class="row wrap">' + crest(c, 1) + '<div class="grow"><h1>' + c + '</h1><div class="row wrap"><span class="badge ok">✓ نادٍ مقيد رسمياً</span><span class="badge">' + s.name + '</span><span class="badge">' + st.comp.age + '</span></div></div><div style="text-align:center"><b style="font-size:1.75rem">' + (st.team + 1) + '</b><div class="xs muted">' + (team ? 'المركز' : 'ترتيب النادي') + '</div></div></div></div>' +
+  '<div class="grid g3 mb"><div class="card kpi"><b>15</b><span>لاعباً مقيداً</span></div><div class="card kpi"><b>14</b><span>' + (team ? 'مباراة هذا الموسم' : 'بطولة هذا الموسم') + '</span></div><div class="card kpi"><b>2</b><span>رخصة تنتهي قريباً</span></div></div>' +
+  '<div class="card scrollx"><h2>قائمة اللاعبين</h2><table><tr><th>#</th><th>اللاعب</th><th>تاريخ الميلاد</th><th>الرخصة</th>' + (team ? '<th class="num">' + s.stats[0] + ' / مباراة</th>' : '<th class="num">التصنيف</th>') + '</tr>' +
+  NAMES.slice(0, 8).map((n, i) => '<tr class="click" onclick="st.player=' + i + ';go(\'player\')"><td>' + (4 + i * 3) + '</td><td><b>' + n + '</b></td><td>' + String(3 + i * 3).padStart(2,'0') + '/0' + (1 + i) + '/2011</td><td>' + (i === 5 ? '<span class="badge warn">تنتهي خلال 30 يوماً</span>' : i === 7 ? '<span class="badge bad">موقوف مباراة</span>' : '<span class="badge ok">سارية</span>') + '</td><td class="num"><b>' + (team ? (s.unit === 'نقطة' ? 18.4 - i * 1.9 : 6.2 - i * 0.6).toFixed(1) : (i + 1) * 3 + st.team) + '</b></td></tr>').join('') + '</table></div>'; };
+
+/* ---------- 10. player page ---------- */
+VIEWS.player = () => { const s = S(), i = st.player % NAMES.length, n = NAMES[i], c = CLUBS[(st.team + (i > 4 ? 1 : 0)) % CLUBS.length], team = s.kind === 'team', e = entrants();
+  const kp = team ? s.stats.map((x, k) => [x + ' / مباراة', ((s.unit === 'نقطة' ? [18.4, 6.2, 4.1] : [6.2, 2.4, 1.1])[k] - i * 0.3).toFixed(1)]) : [['الترتيب', i + 1], ['بطولات', 9 - (i % 3)], ['نسبة الفوز', (82 - i * 4) + '%']];
+  return '<div class="grid g2 mb"><div class="licence"><div class="row"><span class="crest lg" style="background:rgba(255,255,255,.15);color:inherit;border-color:rgba(255,255,255,.4)">' + ini(n) + '</span><div class="grow"><div style="font-size:1.4rem;font-weight:800">' + n + '</div><div class="muted sm">' + c + ' · ' + s.name + ' · ' + st.comp.age + '</div></div></div>' +
+    '<div class="row mt" style="align-items:flex-end"><div class="grow"><span class="badge" style="background:#fff;color:var(--color-success)">✓ لاعب مقيد رسمياً</span><div class="sm" style="margin-top:10px">رقم الرخصة: <b>EG-' + (20410 + i * 37) + '</b></div><div class="muted xs">سارية حتى 30/06/2027 · تاريخ الميلاد ' + String(3 + i).padStart(2,'0') + '/0' + (1 + i % 9) + '/2011</div></div><span class="qr"></span></div></div>' +
+  '<div class="card"><h2>ملف اللاعب</h2><div class="list">' + [['السن مؤكَّد', 'شهادة ميلاد مميكنة مطابقة للرقم القومي', 'ok'], ['الكشف الطبي', 'ساري حتى 01/09/2027', 'ok'], ['موافقة ولي الأمر', 'موقّعة إلكترونياً', 'ok'], ['الانضباط', 'لا توجد عقوبات', 'ok']].map(r => '<div class="item"><span class="badge ' + r[2] + '">✓</span><div class="grow"><b class="sm">' + r[0] + '</b><div class="xs muted">' + r[1] + '</div></div></div>').join('') + '</div></div></div>' +
+  '<div class="grid g3 mb">' + kp.map(k => '<div class="card kpi"><b>' + k[1] + '</b><span>' + k[0] + '</span></div>').join('') + '</div>' +
+  '<div class="card scrollx"><h2>آخر المباريات</h2><table><tr><th>التاريخ</th><th>المنافس</th><th class="num">النتيجة</th>' + (team ? '<th class="num">' + s.stats[0] + '</th>' : '') + '</tr>' +
+  [22, 15, 8, 1].map((d, k) => { const w = k !== 2, sc = scoreOf(s); return '<tr class="click" onclick="go(\'match\')"><td>' + String(d).padStart(2,'0') + '/01/2027</td><td>' + e[(k + 1) % e.length] + '</td><td class="num"><span class="badge ' + (w ? 'ok' : 'bad') + '">' + (w ? sc[0] + ' - ' + sc[1] : sc[1] + ' - ' + sc[0]) + '</span></td>' + (team ? '<td class="num"><b>' + Math.max(2, s.hp[0] - k * 3 - i) + '</b></td>' : '') + '</tr>'; }).join('') + '</table></div>'; };
+
+/* ---------- 11. ask your data ---------- */
+function questions() { const s = S(); return [
+  'من أفضل 5 ' + s.leaderOne + ' تحت 16 سنة في القاهرة هذا الموسم؟',
+  'كم لاعبة مقيدة تحت 16 سنة في الإسكندرية؟',
+  'أي المحافظات فيها أقل عدد من المباريات هذا الموسم؟',
+  'ما المباريات المؤجلة هذا الشهر ولماذا؟' ]; }
+function answer(i) { const s = S(), L = leaders();
+  if (i === 0) return { t: 'هؤلاء أفضل 5 ' + s.leaderOne + ' تحت 16 سنة في منطقة القاهرة حتى الجولة 15:', h: '<table><tr><th>#</th><th>اللاعب</th><th>النادي</th><th class="num">' + (s.kind === 'team' ? 'المعدل' : 'النقاط') + '</th></tr>' + L.map((x, k) => '<tr><td>' + (k + 1) + '</td><td><b>' + x.n + '</b></td><td>' + x.c + '</td><td class="num">' + x.v + '</td></tr>').join('') + '</table>' };
+  if (i === 1) return { t: 'في الإسكندرية 412 لاعبة مقيدة تحت 16 سنة، بزيادة 9% عن الموسم الماضي. توزيعهن على الأندية:', h: [['سبورتنج', 148], ['سموحة', 121], ['الاتحاد السكندري', 96], ['أندية أخرى', 47]].map(r => '<div class="row" style="margin:8px 0"><span class="sm" style="width:130px">' + r[0] + '</span><div class="bar grow"><i style="width:' + Math.round(r[1] / 148 * 100) + '%"></i></div><b class="sm" style="width:36px;text-align:end">' + r[1] + '</b></div>').join('') };
+  if (i === 2) return { t: 'أقل ثلاث محافظات في عدد المباريات هذا الموسم. قد تحتاج دعماً بالملاعب أو الحكام:', h: '<table><tr><th>المحافظة</th><th class="num">المباريات</th><th class="num">الأندية</th></tr>' + [['أسوان', 38, 4], ['الوادي الجديد', 41, 3], ['مطروح', 52, 5]].map(r => '<tr><td><b>' + r[0] + '</b></td><td class="num">' + r[1] + '</td><td class="num">' + r[2] + '</td></tr>').join('') + '</table>' };
+  if (i === 3) return { t: 'تأجلت 3 مباريات هذا الشهر:', h: '<div class="list">' + [['الجزيرة × سموحة', 'الملعب غير متاح'], ['الطيران × سبورتنج', 'مشاركة لاعبين مع المنتخب'], ['الزمالك × الاتحاد السكندري', 'قرار غلق المنشآت في التاسعة مساءً']].map(r => '<div class="item"><b class="sm grow">' + r[0] + '</b><span class="badge warn">' + r[1] + '</span></div>').join('') + '</div><div class="xs muted" style="margin-top:8px">اقتُرح موعد بديل للمباريات الثلاث تلقائياً.</div>' };
+  return { t: 'هذه نسخة تجريبية ببيانات محدودة. جرّب أحد الأسئلة المقترحة لترى شكل الإجابة.', h: '' }; }
+function ask(q, i) { if (!q) { q = $('q').value.trim(); if (!q) { toast('اكتب سؤالك أولاً'); return; } i = questions().indexOf(q); }
+  st.askLog.push({ q, i, done: false }); render();
+  setTimeout(() => { const a = answer(i), id = 'ans' + (st.askLog.length - 1); if (!$(id)) return; typeInto(id, a.t, () => { st.askLog[st.askLog.length - 1].done = true; if (st.screen === 'ask') render(); }); }, 600); }
+VIEWS.ask = () => { const Q = questions();
+  return '<h1>اسأل بياناتك ' + aiTag() + '</h1><p class="sub">اكتب سؤالك بالعربية كما تسأل زميلاً، وتأتيك الإجابة من بيانات الاتحاد.</p>' +
+  '<div class="card mb"><div class="row"><input id="q" placeholder="مثال: كم لاعباً مقيداً تحت 14 سنة في الجيزة؟" onkeydown="if(event.key===\'Enter\')ask()"><button class="btn" onclick="ask()">اسأل</button></div><div class="row wrap mt">' + Q.map((q, i) => '<button class="pick" onclick="ask(\'' + q + '\',' + i + ')">' + q + '</button>').join('') + '</div></div>' +
+  st.askLog.map((x, k) => { const a = answer(x.i); return '<div class="card mb" style="background:var(--color-muted)"><b class="sm">' + x.q + '</b></div><div class="aibox mb">' + (x.done ? '<p class="sm" style="margin:0 0 10px">' + a.t + '</p><div class="fade scrollx">' + a.h + '</div>' : '<span class="spin"></span> <span class="sm" id="ans' + k + '"></span>') + '</div>'; }).join('') +
+  (st.askLog.length ? '' : '<div class="card muted sm" style="text-align:center;padding:32px 16px">اختر سؤالاً من المقترحات أعلاه لتبدأ.</div>'); };
+AFTER.ask = () => { const l = st.askLog[st.askLog.length - 1]; if (l && !l.done && $('ans' + (st.askLog.length - 1))) $('ans' + (st.askLog.length - 1)).textContent = '…'; };
+
+/* ---------- 12. ministry overview ---------- */
+const MIN = { basketball:[18420,214,4120], volleyball:[21300,236,4870], handball:[16950,188,3960], padel:[9800,131,2240], tennis:[12640,142,6310], squash:[14210,96,7350] };
+const GOV = [['القاهرة', 22.4, 71], ['الجيزة', 13.1, 64], ['الإسكندرية', 12.6, 68], ['الدقهلية', 7.2, 49], ['الشرقية', 6.4, 44], ['أسيوط', 3.9, 37], ['بورسعيد', 3.1, 58], ['أسوان', 1.8, 29]];
+VIEWS.ministry = () => { const f = st.minSport, keys = Object.keys(SPORTS), tot = k => sum((f ? [f] : keys).map(x => MIN[x][k])), share = f ? MIN[f][0] / sum(keys.map(x => MIN[x][0])) : 1, max = Math.max(...keys.map(k => MIN[k][0]));
+  return '<h1>' + CONFIG.ministry + ' — نظرة عامة</h1><p class="sub">كل الألعاب وكل المحافظات في شاشة واحدة. الأرقام تجريبية لأغراض العرض فقط.</p>' +
+  '<div class="tabs"><button class="pick' + (!f ? ' on' : '') + '" onclick="st.minSport=null;render()">كل الألعاب</button>' + keys.map(k => '<button class="pick' + (f === k ? ' on' : '') + '" style="--sport:' + SPORTS[k].color + '" onclick="st.minSport=\'' + k + '\';render()">' + SPORTS[k].name + '</button>').join('') + '</div>' +
+  '<div class="grid kpis"><div class="card kpi"><b>' + fmt(tot(0)) + '</b><span>لاعب ولاعبة مقيدون</span><small>+7.4% عن الموسم الماضي</small></div><div class="card kpi"><b>' + fmt(tot(1)) + '</b><span>نادٍ وهيئة ومركز شباب</span><small>في 27 محافظة</small></div><div class="card kpi"><b>' + fmt(tot(2)) + '</b><span>مباراة رسمية هذا الموسم</span><small>98% بنتيجة معتمدة</small></div><div class="card kpi"><b>46%</b><span>متوسط إشغال الملاعب</span><small style="color:var(--color-warning)">فرصة لزيادة الاستخدام</small></div></div>' +
+  '<div class="grid g2"><div class="card"><h2>اللاعبون المقيدون حسب اللعبة</h2>' + keys.map(k => '<div class="row" style="margin:10px 0;cursor:pointer;opacity:' + (f && f !== k ? .35 : 1) + '" onclick="openSport(\'' + k + '\')" title="افتح لوحة الاتحاد"><span class="sm" style="width:108px">' + SPORTS[k].name + '</span><div class="bar grow"><i style="--c:' + SPORTS[k].color + ';width:' + Math.round(MIN[k][0] / max * 100) + '%"></i></div><b class="sm" style="width:58px;text-align:end">' + fmt(MIN[k][0]) + '</b></div>').join('') + '<div class="xs muted">اضغط على أي لعبة لفتح لوحة اتحادها.</div></div>' +
+  '<div class="card"><h2>الفئات</h2>' + [['ذكور', 61, 'var(--color-info)'], ['إناث', 39, 'var(--color-accent)']].map(r => '<div class="row" style="margin:10px 0"><span class="sm" style="width:108px">' + r[0] + '</span><div class="bar grow"><i style="--c:' + r[2] + ';width:' + r[1] + '%"></i></div><b class="sm" style="width:58px;text-align:end">' + r[1] + '%</b></div>').join('') +
+    [['تحت 14 سنة', 34], ['تحت 16 سنة', 27], ['تحت 18 سنة', 21], ['الكبار', 18]].map(r => '<div class="row" style="margin:10px 0"><span class="sm" style="width:108px">' + r[0] + '</span><div class="bar grow"><i style="width:' + r[1] * 2.5 + '%"></i></div><b class="sm" style="width:58px;text-align:end">' + r[1] + '%</b></div>').join('') + '</div></div>' +
+  '<div class="card mt scrollx"><h2>المحافظات</h2><table><tr><th>المحافظة</th><th class="num">اللاعبون المقيدون</th><th class="num">المباريات</th><th>إشغال الملاعب</th></tr>' + GOV.map(g => '<tr><td><b>' + g[0] + '</b></td><td class="num">' + fmt(Math.round(g[1] * 1000 * share)) + '</td><td class="num">' + fmt(Math.round(g[1] * 310 * share)) + '</td><td><div class="row"><div class="bar grow" style="min-width:80px"><i style="--c:' + (g[2] < 40 ? 'var(--color-destructive)' : g[2] < 60 ? 'var(--color-warning)' : 'var(--color-success)') + ';width:' + g[2] + '%"></i></div><span class="sm" style="width:40px">' + g[2] + '%</span></div></td></tr>').join('') + '</table></div>' +
+  '<div class="aibox mt"><div class="row wrap">' + aiTag() + '<span class="sm grow"><b>اسأل عن أي رقم:</b> «كم لاعبة تحت 16 سنة تمارس الكرة الطائرة في الإسكندرية؟»</span><button class="btn" onclick="st.sport=\'volleyball\';st.askLog=[];go(\'ask\');ask(questions()[1],1)">جرّب السؤال</button></div></div>'; };
+function openSport(k) { setSport(k); go('home'); }
+
+/* ---------- sketch toolbar ---------- */
+function vp(w) { $('app').style.maxWidth = w; }
+let annoOn = false;
+document.addEventListener('mousemove', ev => { const a = $('anno'); if (!annoOn || ev.target.closest('#sketch-tools')) { a.style.display = 'none'; return; }
+  const c = getComputedStyle(ev.target); a.textContent = ev.target.tagName.toLowerCase() + ' · ' + c.fontSize + ' · ' + c.color + ' · pad ' + c.padding; a.style.display = 'block'; a.style.left = Math.min(ev.clientX + 12, innerWidth - 320) + 'px'; a.style.top = (ev.clientY + 14) + 'px'; });
+
+render();
+</script>
+</body>
+</html>
