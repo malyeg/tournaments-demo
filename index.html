@@ -280,6 +280,7 @@ function renderSide() {
   SCREENS.forEach(x => { if (x[1] !== g) { g = x[1]; h += '<h4>' + g + '</h4>'; }
     const label = x[0] === 'team' && S().kind === 'racket' ? 'النادي' : x[0] === 'standings' && S().kind === 'racket' ? 'التصنيف' : x[2];
     h += '<button class="nav' + (st.screen === x[0] ? ' on' : '') + '" onclick="go(\'' + x[0] + '\')">' + label + (x[3] ? aiTag('AI') : '') + '</button>'; });
+  h += '<h4>تطبيق الهاتف</h4><button class="nav" onclick="location.href=\'https://malyeg.github.io/tournaments-demo/mobile.html\'">الجمهور · الحكم · المسجِّل · النادي</button>';
   $('side').innerHTML = h;
 }
 function go(k) { st.screen = k; if (k !== 'live') stopLive(); render(); window.scrollTo(0, 0); }
