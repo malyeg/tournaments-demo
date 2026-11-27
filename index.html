@@ -230,7 +230,7 @@ const SCREENS = [
   ['home','إدارة الاتحاد','الرئيسية'],
   ['create','إدارة الاتحاد','إنشاء بطولة'],
   ['schedule','إدارة الاتحاد','جدول المباريات', true],
-  ['ask','إدارة الاتحاد','اسأل بياناتك', true],
+  ['ask','إدارة الاتحاد','المساعد الذكي', true],
   ['comp','البطولة','صفحة البطولة'],
   ['standings','البطولة','الترتيب'],
   ['match','البطولة','المباراة'],
@@ -321,7 +321,7 @@ VIEWS.home = () => { const s = S(), p = pendingList(), e = entrants(), team = s.
       : '<div class="item muted sm">لا توجد طلبات معلّقة. كل شيء معتمد.</div>') + '</div></div>' +
   '<div class="card"><h2>مباريات اليوم</h2><div class="list">' +
     [[0,1,'19:00',1],[2,3,'17:00',0],[4,5,'21:00',0]].map((m, i) => '<div class="item"><div class="grow"><b class="sm">' + e[m[0]] + ' × ' + e[m[1]] + '</b><div class="xs muted">' + m[2] + ' · ' + courts()[i] + ' · ' + REFS[i] + '</div></div>' + (m[3] ? '<span class="badge live pulse">مباشر</span><button class="btn sm ghost" onclick="go(\'live\')">متابعة</button>' : '<span class="badge">لم تبدأ</span>') + '</div>').join('') +
-  '</div><div class="row mt wrap"><button class="btn" onclick="go(\'create\')">+ إنشاء بطولة</button><button class="btn ghost" onclick="go(\'ask\')">اسأل بياناتك ' + aiTag('AI') + '</button></div></div></div>' +
+  '</div><div class="row mt wrap"><button class="btn" onclick="go(\'create\')">+ إنشاء بطولة</button><button class="btn ghost" onclick="go(\'ask\')">المساعد الذكي ' + aiTag('AI') + '</button></div></div></div>' +
   '<div class="card mt"><h2>تنبيهات</h2><div class="list">' +
     '<div class="item"><span class="badge warn">رخص</span><span class="sm grow">86 رخصة لاعب تنتهي خلال 30 يوماً</span></div>' +
     '<div class="item"><span class="badge bad">نتائج</span><span class="sm grow">مباراتان من الجولة 14 بلا تقرير معتمد</span><button class="btn sm ghost" onclick="go(\'report\')">فتح</button></div>' +
@@ -478,7 +478,7 @@ function ask(q, i) { if (!q) { q = $('q').value.trim(); if (!q) { toast('اكت�
   st.askLog.push({ q, i, done: false }); render();
   setTimeout(() => { const a = answer(i), id = 'ans' + (st.askLog.length - 1); if (!$(id)) return; typeInto(id, a.t, () => { st.askLog[st.askLog.length - 1].done = true; if (st.screen === 'ask') render(); }); }, 600); }
 VIEWS.ask = () => { const Q = questions();
-  return '<h1>اسأل بياناتك ' + aiTag() + '</h1><p class="sub">اكتب سؤالك بالعربية كما تسأل زميلاً، وتأتيك الإجابة من بيانات الاتحاد.</p>' +
+  return '<h1>المساعد الذكي ' + aiTag() + '</h1><p class="sub">اكتب سؤالك بالعربية كما تسأل زميلاً، وتأتيك الإجابة من بيانات الاتحاد.</p>' +
   '<div class="card mb"><div class="row"><input id="q" placeholder="مثال: كم لاعباً مقيداً تحت 14 سنة في الجيزة؟" onkeydown="if(event.key===\'Enter\')ask()"><button class="btn" onclick="ask()">اسأل</button></div><div class="row wrap mt">' + Q.map((q, i) => '<button class="pick" onclick="ask(\'' + q + '\',' + i + ')">' + q + '</button>').join('') + '</div></div>' +
   st.askLog.map((x, k) => { const a = answer(x.i); return '<div class="card mb" style="background:var(--color-muted)"><b class="sm">' + x.q + '</b></div><div class="aibox mb">' + (x.done ? '<p class="sm" style="margin:0 0 10px">' + a.t + '</p><div class="fade scrollx">' + a.h + '</div>' : '<span class="spin"></span> <span class="sm" id="ans' + k + '"></span>') + '</div>'; }).join('') +
   (st.askLog.length ? '' : '<div class="card muted sm" style="text-align:center;padding:32px 16px">اختر سؤالاً من المقترحات أعلاه لتبدأ.</div>'); };
