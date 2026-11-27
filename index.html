@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sketch 004 · Federation POC</title>
+<title>منصة البطولات الذكية — نموذج تجريبي</title>
 <style id="theme">
 /* Federation / ministry platform theme — official look (navy + gold).
    Same variable names as default.css so sketches can switch between them. */
@@ -41,7 +41,7 @@
   --radius-full: 9999px;
 }
 </style>
-<script id="themes">window.THEMES={"federation":"/* Federation / ministry platform theme — official look (navy + gold).\n   Same variable names as default.css so sketches can switch between them. */\n:root {\n  --color-bg: #f4f6f9;\n  --color-fg: #0f1f33;\n  --color-primary: #0b3b5c;\n  --color-primary-fg: #ffffff;\n  --color-secondary: #e9eef4;\n  --color-muted: #f1f4f8;\n  --color-muted-fg: #5b6b7f;\n  --color-card: #ffffff;\n  --color-border: #dbe2ea;\n  --color-destructive: #c62828;\n  --color-success: #1e8e4e;\n  --color-warning: #b7791f;\n  --color-info: #1d6fb8;\n  --color-accent: #b8923a;\n  --color-amber: #b7791f;\n\n  --color-side-bg: #0b2a42;\n  --color-side-fg: #e6edf5;\n  --color-side-muted: #8fa5bc;\n  --color-side-active: #14476c;\n\n  --font-sans: system-ui, -apple-system, \"Segoe UI\", \"Noto Sans Arabic\", Tahoma, sans-serif;\n  --text-xs: 0.75rem;\n  --text-sm: 0.875rem;\n  --text-base: 1rem;\n  --text-lg: 1.125rem;\n  --text-2xl: 1.5rem;\n\n  --radius-xl: 0.75rem;\n  --radius-2xl: 1rem;\n  --radius-full: 9999px;\n}\n","default":"/* Court Attack theme — mirrors .planning/design/DESIGN.md tokens (src/lib/colors.ts). */\n:root {\n  --color-bg: #ffffff;\n  --color-fg: #0f172a;\n  --color-primary: #ffd000;\n  --color-primary-fg: #0f172a;\n  --color-secondary: #f1f5f9;\n  --color-muted: #f8fafc;\n  --color-muted-fg: #64748b;\n  --color-card: #ffffff;\n  --color-border: #e2e8f0;\n  --color-destructive: #ef4444;\n  --color-success: #22c55e;\n  --color-warning: #eab308;\n  --color-info: #3b82f6;\n  --color-accent: #5e8c8c;\n  --color-amber: #f59e0b;\n\n  --font-sans: system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif;\n  --text-xs: 0.75rem;\n  --text-sm: 0.875rem;\n  --text-base: 1rem;\n  --text-lg: 1.125rem;\n  --text-2xl: 1.5rem;\n\n  --radius-xl: 0.75rem;\n  --radius-2xl: 1rem;\n  --radius-full: 9999px;\n}\n\n[data-theme=\"dark\"] {\n  --color-bg: #0f172a;\n  --color-fg: #f8fafc;\n  --color-secondary: #1e293b;\n  --color-muted: #1e293b;\n  --color-muted-fg: #94a3b8;\n  --color-card: #1e293b;\n  --color-border: #334155;\n  --color-destructive: #f87171;\n  --color-success: #4ade80;\n  --color-warning: #facc15;\n  --color-info: #60a5fa;\n  --color-accent: #6ba3a3;\n}\n"};</script>
+<script id="themes">window.THEMES={"federation": "/* Federation / ministry platform theme — official look (navy + gold).\n   Same variable names as default.css so sketches can switch between them. */\n:root {\n  --color-bg: #f4f6f9;\n  --color-fg: #0f1f33;\n  --color-primary: #0b3b5c;\n  --color-primary-fg: #ffffff;\n  --color-secondary: #e9eef4;\n  --color-muted: #f1f4f8;\n  --color-muted-fg: #5b6b7f;\n  --color-card: #ffffff;\n  --color-border: #dbe2ea;\n  --color-destructive: #c62828;\n  --color-success: #1e8e4e;\n  --color-warning: #b7791f;\n  --color-info: #1d6fb8;\n  --color-accent: #b8923a;\n  --color-amber: #b7791f;\n\n  --color-side-bg: #0b2a42;\n  --color-side-fg: #e6edf5;\n  --color-side-muted: #8fa5bc;\n  --color-side-active: #14476c;\n\n  --font-sans: system-ui, -apple-system, \"Segoe UI\", \"Noto Sans Arabic\", Tahoma, sans-serif;\n  --text-xs: 0.75rem;\n  --text-sm: 0.875rem;\n  --text-base: 1rem;\n  --text-lg: 1.125rem;\n  --text-2xl: 1.5rem;\n\n  --radius-xl: 0.75rem;\n  --radius-2xl: 1rem;\n  --radius-full: 9999px;\n}\n"};</script>
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -61,6 +61,8 @@
   .sport:hover { background: var(--color-secondary); }
   .sport.on { border-color: var(--sport); background: color-mix(in srgb, var(--sport) 14%, var(--color-card)); font-weight: 600; }
   .dot { width: 10px; height: 10px; border-radius: 999px; background: var(--c, var(--sport)); flex: none; }
+  .sponsor { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: var(--text-xs); color: var(--color-muted-fg); }
+  .sponsor .slot { border: 1px dashed var(--color-accent, var(--color-warning)); color: var(--color-accent, var(--color-warning)); border-radius: 8px; padding: 5px 14px; font-weight: 700; }
   .demo { font-size: var(--text-xs); border: 1px dashed var(--color-warning); color: var(--color-warning); border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
 
   /* layout */
@@ -175,7 +177,7 @@
 <div id="sketch-tools">
   <select title="Theme (variants)" onchange="document.getElementById('theme').textContent=THEMES[this.value]">
     <option value="federation">A: Official</option>
-    <option value="default">B: App look</option>
+    
   </select>
   <button onclick="vp('390px')">Phone</button><button onclick="vp('768px')">Tablet</button><button onclick="vp('100%')">Desktop</button>
   <button onclick="annoOn=!annoOn;this.style.background=annoOn?'#2563eb':'#222'">Annotate</button>
@@ -186,7 +188,7 @@
    SWAP NAME / LOGO HERE — the only place the product name lives.
    ============================================================ */
 const CONFIG = {
-  product: 'منصة البطولات',          // placeholder name (final name not decided)
+  product: 'منصة البطولات الذكية',          // placeholder name (final name not decided)
   ministry: 'وزارة الشباب والرياضة',
   season: '2026 / 2027',
   logoSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>'
@@ -378,7 +380,7 @@ VIEWS.comp = () => { const s = S(), e = entrants(), L = leaders(), team = s.kind
   if (st.compTab === 'teams') body = '<div class="grid g4">' + e.map((n, i) => '<div class="card" style="cursor:pointer;text-align:center" onclick="st.team=' + (team ? i : i % CLUBS.length) + ';' + (team ? 'go(\'team\')' : 'st.player=' + i + ';go(\'player\')') + '">' + crest(n, 1) + '<div class="sm" style="font-weight:700;margin-top:8px">' + n + '</div><div class="xs muted">' + (team ? '15 لاعباً مقيداً' : CLUBS[i % CLUBS.length]) + '</div></div>').join('') + '</div>';
   if (st.compTab === 'leaders') body = '<div class="card scrollx"><table><tr><th>#</th><th>اللاعب</th><th>النادي</th><th class="num">' + (team ? 'المعدل في المباراة' : 'نقاط التصنيف') + '</th></tr>' + L.map((x, i) => '<tr class="click" onclick="st.player=' + i + ';go(\'player\')"><td>' + (i + 1) + '</td><td><b>' + x.n + '</b></td><td>' + x.c + '</td><td class="num"><b>' + x.v + '</b></td></tr>').join('') + '</table></div>';
   if (st.compTab === 'matches') body = '<div class="card list">' + [[0,1,'انتهت',1],[2,3,'مباشر',2],[4,5,'غداً 19:00',0]].map(m => { const sc = scoreOf(s); return '<div class="item" style="cursor:pointer" onclick="go(\'' + (m[3] === 2 ? 'live' : 'match') + '\')"><div class="grow"><b class="sm">' + e[m[0]] + ' × ' + e[m[1]] + '</b><div class="xs muted">الجولة 15 · ' + courts()[m[0] % 4] + '</div></div>' + (m[3] === 1 ? '<b>' + sc[0] + ' - ' + sc[1] + '</b><span class="badge ok">معتمدة</span>' : m[3] === 2 ? '<span class="badge live pulse">مباشر</span>' : '<span class="badge">' + m[2] + '</span>') + '</div>'; }).join('') + '</div>';
-  return '<div class="card mb"><div class="row wrap"><span class="crest lg" style="border-radius:16px">' + ini(s.name) + '</span><div class="grow"><h1>' + compName() + '</h1><div class="row wrap"><span class="badge">' + s.org + '</span><span class="badge">موسم ' + CONFIG.season + '</span><span class="badge info">' + (team ? TEAM_FORMATS : RACKET_FORMATS)[st.comp.format] + '</span><span class="badge ok">الجولة 15</span></div></div><button class="btn ghost" onclick="go(\'standings\')">' + (team ? 'الترتيب' : 'التصنيف') + '</button></div></div>' +
+  return '<div class="card mb"><div class="row wrap"><span class="crest lg" style="border-radius:16px">' + ini(s.name) + '</span><div class="grow"><h1>' + compName() + '</h1><div class="row wrap"><span class="badge">' + s.org + '</span><span class="badge">موسم ' + CONFIG.season + '</span><span class="badge info">' + (team ? TEAM_FORMATS : RACKET_FORMATS)[st.comp.format] + '</span><span class="badge ok">الجولة 15</span></div><div class="sponsor"><span>برعاية</span><span class="slot">مساحة شعار راعي البطولة</span></div></div><button class="btn ghost" onclick="go(\'standings\')">' + (team ? 'الترتيب' : 'التصنيف') + '</button></div></div>' +
   '<div class="tabs">' + tabs.map(t => '<button class="pick' + (st.compTab === t[0] ? ' on' : '') + '" onclick="st.compTab=\'' + t[0] + '\';render()">' + t[1] + '</button>').join('') + '</div>' + body; };
 
 /* ---------- shared match bits ---------- */
